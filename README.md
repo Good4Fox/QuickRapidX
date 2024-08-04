@@ -1,6 +1,6 @@
 <div align="center">
 
-# <img src="README/Info_QuickRapidX.svg" alt="QuickRapidX" width="200vw" height="50vw">
+# <img src="README/Info_QuickRapidX.svg" alt="QuickRapidX" width="300vw" height="auto">
 
 <img src="README/Info_Stats_Create.svg" alt="QuickRapidX" width="400vw" height="auto">
 
