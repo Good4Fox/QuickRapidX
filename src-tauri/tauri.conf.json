@@ -1,10 +1,9 @@
 {
   "build": {
-    "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "bun run dev",
+    "beforeBuildCommand": "bun run build",
     "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": false
+    "distDir": "../build"
   },
   "package": {
     "productName": "quickrapidx",
@@ -18,6 +17,16 @@
         "open": true
       }
     },
+    "windows": [
+      {
+        "title": "quickrapidx",
+        "width": 800,
+        "height": 600
+      }
+    ],
+    "security": {
+      "csp": null
+    },
     "bundle": {
       "active": true,
       "targets": "all",
@@ -29,18 +38,6 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ]
-    },
-    "security": {
-      "csp": null
-    },
-    "windows": [
-      {
-        "fullscreen": false,
-        "resizable": true,
-        "title": "quickrapidx",
-        "width": 800,
-        "height": 600
-      }
-    ]
+    }
   }
 }
