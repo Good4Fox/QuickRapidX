@@ -2,6 +2,8 @@
 
 # <img src="README/Info_QuickRapidX.svg" alt="QuickRapidX" width="200vw" height="50vw">
 
+<img src="README/Info_Stats_Create.svg" alt="QuickRapidX" width="400vw" height="auto">
+
 # <img src="README/Info_Attention.svg" alt="QuickRapidX" width="100%" height="auto">
 
 <a href="https://github.com/Good4Fox/QuickRapidX/releases/latest"><img src="README/Info_latest_version.svg" alt="The latest version" width="200vw" height="50vw"></a>
