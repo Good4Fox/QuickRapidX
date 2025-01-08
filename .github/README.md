@@ -2,7 +2,7 @@
 
 # <img src="README/Info_QuickRapidX.svg" alt="QuickRapidX" width="300vw" height="auto">
 
-<img src="README/Info_Stats_Create_Active_Anim.webp" alt="QuickRapidX" width="100%" height="auto">
+<img src="README/Info_Stats_Create_Pause_Anim.webp" alt="QuickRapidX" width="100%" height="auto">
 
 # <img src="README/Info_Attention.svg" alt="QuickRapidX" width="100%" height="auto">
 
