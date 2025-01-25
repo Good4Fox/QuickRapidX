@@ -1,6 +1,6 @@
 <div align="center">
 
-<div>
+<div align="center">
 
     🚀 An update is coming soon 0.0.03!
     ⚡ Скоро выйдет обновление 0.0.03!
