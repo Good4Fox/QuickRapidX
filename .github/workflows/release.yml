@@ -35,10 +35,32 @@ jobs:
       - name: Install
         run: bun install --frozen-lockfile
 
+      # Подпись включается сама, когда появятся секреты, и молча пропускается,
+      # пока их нет: до получения сертификата сборка обязана работать как есть,
+      # а не падать с жалобой на отсутствующий ключ.
+      #
+      # Отпечаток берётся из секрета, а не из файла: с июня 2023 закрытый ключ
+      # обязан жить на токене или в облачном хранилище, и `.pfx` в репозитории
+      # больше не вариант ни при каких условиях.
+      - name: Signing
+        id: sign
+        shell: pwsh
+        run: |
+          if ("${{ secrets.WINDOWS_CERT_THUMBPRINT }}") {
+            "on=true" >> $env:GITHUB_OUTPUT
+            "Подпись включена"
+          } else {
+            "on=false" >> $env:GITHUB_OUTPUT
+            "Секретов нет — собираем без подписи"
+          }
+
       - name: Build
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Tauri читает отпечаток отсюда и подписывает и приложение, и оба
+          # установщика. Пусто — подписи просто не будет
+          TAURI_WINDOWS_CERTIFICATE_THUMBPRINT: ${{ secrets.WINDOWS_CERT_THUMBPRINT }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: QuickRapidX ${{ github.ref_name }}

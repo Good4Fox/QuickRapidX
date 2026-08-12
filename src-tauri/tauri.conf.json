@@ -60,12 +60,31 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "publisher": "Good Fox",
+    "copyright": "© 2024 — настоящее время, QuickRapidX. Лицензия MIT",
+    "category": "Utility",
+    "homepage": "https://github.com/Good4Fox/QuickRapidX",
+    "licenseFile": "../LICENSE",
+    "shortDescription": "Органайзер для Windows: программы, наборы, изоляция и уборка",
+    "longDescription": "QuickRapidX держит установленные программы в порядке, собирает их в наборы, запускает с урезанными правами и прибирается в системе — от корзины до Windows.old.",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "windows": {
+      "signCommand": null,
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "http://timestamp.digicert.com",
+      "tsp": false,
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": ["Russian", "English", "Japanese"],
+        "displayLanguageSelector": true
+      }
+    }
   }
 }

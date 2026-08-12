@@ -38,6 +38,10 @@ desktop.ini
 *.swp
 
 # Журналы и временное
+*.bak
+*.orig
+*.rej
+*~
 *.log
 npm-debug.log*
 yarn-debug.log*
