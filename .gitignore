@@ -1,10 +1,44 @@
-.DS_Store
+# Зависимости и сборка интерфейса
 node_modules
 /build
 /.svelte-kit
 /package
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Сборка ядра.
+#
+# Самая важная строка во всём файле: `target` у Rust разрастается до десятков
+# гигабайт, и один такой коммит останется в истории навсегда — вычистить его
+# потом можно только перезаписью всей ветки. У GitHub к тому же потолок в сто
+# мегабайт на файл, так что до истории дело даже не дойдёт.
+/src-tauri/target
+/src-tauri/gen
+
+# Готовые установщики: их место в разделе релизов, а не в истории кода
+/src-tauri/target/release/bundle
+*.msi
+*.exe.blockmap
+
+# Окружение
 .env
 .env.*
 !.env.example
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
+
+# Системное
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Среды разработки. Общие настройки проекта оставляем, личные — нет
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+*.swp
+
+# Журналы и временное
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -1,0 +1,405 @@
+/* User App_tray */
+.tray_app {
+    width: 100%;
+    height: 441px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.tray_app_top {
+    width: 100%;
+    height: 392px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+}
+
+.tray_app_top_panel {
+    width: 90%;
+    height: 392px;
+    border: 4px solid var(--color-gold);
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align:  center;
+}
+
+
+.tray_app_bottom {
+    width: 85%;
+    height: 49px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tray_app_bottom_use {
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tray_app_bottom_link {
+    width: 31.2px;
+    height: 31.2px;
+    display: flex;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 4.9px 0 0;
+    cursor: pointer;
+}
+
+.tray_app_bottom_link:hover {
+    background-color: rgb(var(--gold-rgb) / 0.8);
+}
+
+.tray_app_bottom_link_back {
+    width: 23.4px;
+    height: 23.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tray_app_bottom_link_back_ico_1,
+.tray_app_bottom_link_back_ico_6 {
+    width: 23.4px;
+    height: 23.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ── Корзина ─────────────────────────────────────────────────────────── */
+/*
+ * Вкладка переделана целиком. Прежняя была анкетой: галочки, радиокнопки,
+ * поле предела — всё то, что настраивают раз в жизни, а панель трея открывают
+ * взглянуть и нажать. Настройки уехали в окно программы, здесь остались
+ * состояние и два действия.
+ *
+ * Прежние имена (`tray_app_trash_*`) больше не используются; уцелели только
+ * два класса значков — у них маски в `icons.css`, и заводить под то же самое
+ * вторые незачем.
+ */
+.tray_bin_tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    height: 100%;
+}
+
+/* Кольцо и всё, что в нём. Ширина по кольцу, а не по панели: подпись внутри
+   должна стоять по центру круга, а не по центру окна */
+.tray_bin_gauge {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 150px;
+    height: 150px;
+}
+
+.tray_bin_ring {
+    width: 100%;
+    height: 100%;
+    /* Штрих начинается справа, а привычнее сверху — доворачиваем круг */
+    transform: rotate(-90deg);
+}
+
+.tray_bin_ring_track,
+.tray_bin_ring_fill {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+}
+
+.tray_bin_ring_track {
+    stroke: rgb(var(--gold-rgb) / 0.15);
+}
+
+.tray_bin_ring_fill {
+    stroke: var(--color-gold);
+    transition: stroke-dashoffset 420ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Поверх кольца, но в той же клетке сетки: без absolute, поэтому ничего не
+   может уехать за пределы и накрыть соседей */
+.tray_bin_core {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.tray_bin_glyph {
+    width: 44px;
+    height: 44px;
+    mask-image: url($lib/App/img/tray/tray_trash.svg);
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+    background-color: rgb(var(--gold-rgb));
+    transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Пустая корзина гаснет: одного нуля в процентах мало, вид должен читаться
+   раньше, чем цифра */
+.tray_bin_glyph_idle {
+    background-color: var(--color-icon-muted);
+}
+
+.tray_bin_share {
+    font: 15.6px Rubik-Medium;
+    color: var(--color-gold);
+    font-variant-numeric: tabular-nums;
+}
+
+.tray_bin_numbers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+}
+
+.tray_bin_size {
+    font: 23.4px Rubik-Medium;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.tray_bin_meta {
+    font: 11.7px Rubik-Regular;
+    color: var(--color-placeholder);
+    text-transform: uppercase;
+}
+
+.tray_bin_acts {
+    display: flex;
+    gap: 14px;
+}
+
+.tray_bin_act {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    width: 97.5px;
+    height: 78px;
+    /* Токен, а не число: жёсткий тёмный цвет светлую тему не замечал */
+    background-color: var(--color-surface);
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tray_bin_act:hover {
+    background-color: rgb(var(--gold-rgb) / 0.12);
+}
+
+/* Пустую корзину чистить нечем — кнопка не притворяется рабочей */
+.tray_bin_act_off {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.tray_bin_act_off:hover {
+    background-color: var(--color-surface);
+}
+
+.tray_bin_act .tray_app_trash_panel_selection_button_ico_1,
+.tray_bin_act .tray_app_trash_panel_selection_button_ico_2 {
+    width: 27px;
+    height: 27px;
+}
+
+.tray_bin_act_text {
+    font: 12.5px Rubik-Medium;
+    color: var(--color-text);
+    text-transform: uppercase;
+}
+
+.tray_bin_more {
+    font: 11.7px Rubik-Medium;
+    color: var(--color-gold);
+    text-transform: uppercase;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.tray_bin_more:hover {
+    text-decoration: underline;
+}
+
+/* ── Система ─────────────────────────────────────────────────────────── */
+/*
+ * Раздел заведён, чтобы панель перестала быть наполовину пустой: в нижнем
+ * ряду стояли четыре заглушки «?». Взято только то, что ядро уже умеет —
+ * сводка о машине и четыре действия с питанием.
+ */
+.tray_sys {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    width: 92%;
+    height: 100%;
+}
+
+.tray_sys_facts {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+/* Название слева, значение справа, полоса под ними во всю ширину: числа без
+   полосы читаются дольше, чем панель живёт на экране */
+.tray_sys_fact {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+        'name value'
+        'bar  bar';
+    gap: 6px 10px;
+    align-items: center;
+}
+
+.tray_sys_fact_plain {
+    grid-template-areas: 'name value';
+}
+
+.tray_sys_fact_name {
+    grid-area: name;
+    font: 11.7px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-text);
+}
+
+.tray_sys_fact_value {
+    grid-area: value;
+    justify-self: end;
+    font: 11.7px Rubik-Medium;
+    color: var(--color-placeholder);
+    font-variant-numeric: tabular-nums;
+}
+
+.tray_sys_bar {
+    grid-area: bar;
+    overflow: hidden;
+    height: 5px;
+    border-radius: 100px;
+    background-color: rgb(var(--gold-rgb) / 0.15);
+}
+
+.tray_sys_bar_fill {
+    height: 100%;
+    border-radius: 100px;
+    background-color: rgb(var(--gold-rgb));
+    transition: width 420ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Два на два: в строку из четырёх подписи не помещаются, а без подписей сон
+   и выключение различают не все */
+.tray_sys_power {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+}
+
+/* ── Пустая главная ──────────────────────────────────────────────────── */
+/*
+ * Вместо строчки «наборов нет» — то, ради чего сюда и пришли: знак, объяснение
+ * и кнопка, ведущая туда, где наборы заводят.
+ */
+.tray_empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 88%;
+    margin: auto;
+    text-align: center;
+}
+
+.tray_empty_title {
+    font: 15.6px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-text);
+}
+
+.tray_empty_note {
+    font: 11.7px Rubik-Regular;
+    color: var(--color-placeholder);
+    text-align: center;
+}
+
+.tray_empty_go {
+    margin-top: 4px;
+    padding: 9px 18px;
+    font: 12.5px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-text);
+    background-color: rgb(var(--gold-rgb) / 0.16);
+    border: 1px solid rgb(var(--gold-rgb) / 0.5);
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.tray_empty_go:hover {
+    background-color: rgb(var(--gold-rgb) / 0.3);
+}
+
+/* Текущий раздел в нижнем ряду. Раньше отметки не было вовсе — по виду ряда
+   нельзя было понять, где ты находишься */
+.tray_app_bottom_link_on {
+    background-color: rgb(var(--gold-rgb) / 0.22);
+}
+
+.tray_app_bottom_link_on .tray_app_bottom_link_back > div {
+    background-color: rgb(var(--gold-rgb));
+}
+
+/* Взведённый выход: одно нажатие уже сделано, следующее выходит */
+.tray_app_bottom_link_armed {
+    background-color: var(--color-danger);
+}
+
+.tray_app_bottom_link_armed .tray_app_bottom_link_back_ico_quit {
+    background-color: var(--color-text);
+}
+
+/*
+ * Полоса прокрутки в панели видна.
+ *
+ * Глобально она спрятана (`::-webkit-scrollbar { display: none }`), и список
+ * наборов длиннее панели прокручивался вообще без признака, что там что-то
+ * есть. Здесь она нужна — тонкая, но нужна.
+ */
+.qrx_tray_groups::-webkit-scrollbar {
+    display: block;
+    width: 4px;
+}
+
+.qrx_tray_groups::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--gold-rgb) / 0.35);
+    border-radius: 100px;
+}
+
+.qrx_tray_groups::-webkit-scrollbar-track {
+    background-color: transparent;
+}

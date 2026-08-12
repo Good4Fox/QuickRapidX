@@ -1,15 +1,21 @@
-// Tauri doesn't have a Node.js server to do proper SSR
-// so we will use adapter-static to prerender the app (SSG)
-// See: https://v2.tauri.app/start/frontend/sveltekit/ for more info
-import adapter from "@sveltejs/adapter-static";
-import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
+import adapter from '@sveltejs/adapter-static';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+
+// У Tauri нет Node-сервера, поэтому маршруты пререндерятся в статические HTML:
+// каждое окно (/, /splash, /tray) грузит собственный файл.
+// См. https://v2.tauri.app/start/frontend/sveltekit/
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  preprocess: vitePreprocess(),
-  kit: {
-    adapter: adapter(),
-  },
+	preprocess: vitePreprocess(),
+	kit: {
+		adapter: adapter({
+			pages: 'build',
+			assets: 'build',
+			precompress: false,
+			strict: true
+		})
+	}
 };
 
 export default config;

@@ -1,0 +1,26 @@
+{
+  "app_start": [
+    {
+      "id": "e262917f-f9da-4ddc-8bd6-f5c59e265ea0",
+      "site": "https://discord.com/",
+      "download_plus": "",
+      "download": "https://discord.com/api/downloads/distributions/app/installers/latest?channel=stable&platform=win&arch=x86",
+      "programm_ico": "background-image: url(/src/app/img/programm_icons/Discord.svg);",
+      "programm_name": "Discord",
+      "programm_description": "Кроссплатформенная проприетарная система мгновенного обмена сообщениями с поддержкой VoIP и видеоконференций."
+    },
+    {
+      "id": "cf752a9c-9f26-44dd-b42e-ad782456e38e",
+      "site": "https://store.steampowered.com/",
+      "download_plus": "",
+      "download": "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe",
+      "programm_ico": "background-image: url(/src/app/img/programm_icons/Steam.svg);",
+      "programm_name": "Steam",
+      "programm_description": "Онлайн-сервис цифрового распространения компьютерных игр и программ, разработанный и поддерживаемый компанией Valve."
+    }
+  ],
+  "app_games_start": [],
+  "app_game_launcher_start": [],
+  "app_dev_start": [],
+  "app_ai_dops": []
+}

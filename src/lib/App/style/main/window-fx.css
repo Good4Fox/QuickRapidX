@@ -1,0 +1,33 @@
+/*
+ * Появление содержимого после разворачивания окна.
+ *
+ * Сворачивание и разворачивание самого окна анимирует Windows. Здесь только
+ * доводка: без неё содержимое возникает рывком в конце системной анимации.
+ *
+ * Анимируются лишь opacity и transform — их браузер считает на композиторе,
+ * не пересчитывая раскладку, поэтому кадры не проседают даже на слабой машине.
+ */
+
+@keyframes app_restore_in {
+	from {
+		opacity: 0;
+		transform: scale(0.985);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+#app.app_restoring {
+	animation: app_restore_in 260ms cubic-bezier(0.16, 1, 0.3, 1);
+	/* Отдельный слой на время анимации: без него браузер перерисовывает
+	   всё содержимое окна на каждом кадре. */
+	will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#app.app_restoring {
+		animation: none;
+	}
+}

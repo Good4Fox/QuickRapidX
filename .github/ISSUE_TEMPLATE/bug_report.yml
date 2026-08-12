@@ -1,0 +1,82 @@
+name: Bug report
+description: Something behaves differently from what it should
+title: '[Bug] '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Two fields below matter more than the rest — the
+        app version and the Windows build. Half of what this program does depends
+        on the exact build it is running on.
+
+        Found a security issue? Do not file it here — see
+        [SECURITY.md](https://github.com/Good4Fox/QuickRapidX/blob/main/SECURITY.md).
+
+  - type: input
+    id: version
+    attributes:
+      label: QuickRapidX version
+      description: Settings → About, or the tag of the release you installed.
+      placeholder: 0.5.0
+    validations:
+      required: true
+
+  - type: input
+    id: windows
+    attributes:
+      label: Windows build
+      description: Press Win+R, run `winver`, and copy the line with the build number.
+      placeholder: Windows 11 24H2 (26100.2314)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where it happens
+      options:
+        - Sets
+        - Found on this machine
+        - Storage / Places
+        - Isolation
+        - Recycle Bin
+        - Recovery
+        - Catalog
+        - Tray panel
+        - Settings
+        - First-run wizard
+        - Somewhere else
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you saw, and what you expected instead.
+      placeholder: |
+        1. Opened a set from the tray
+        2. Dragged the first icon to the left
+        3. It jumped to second place instead of staying put
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error text
+      description: >
+        The exact wording of any notification or message. Paste it as text rather
+        than a screenshot — text can be searched.
+      render: text
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I am on the latest release
+          required: true
+        - label: I searched the existing issues
+          required: true

@@ -1,0 +1,205 @@
+/*
+ * Полоса заголовка главного окна.
+ *
+ * Окно без системной рамки, поэтому заголовок рисуем сами. Раскладка — три
+ * зоны: слева знак с названием, по центру тянущаяся область перетаскивания
+ * с полоской-признаком, справа инструменты и кнопки окна.
+ *
+ * Что было не так в прошлой версии:
+ *   * `.titlebar` имел высоту 29.2px, а `.titlebar_center` и `.titlebar_right`
+ *     внутри — 36.5px, то есть дети были выше родителя;
+ *   * правая зона прижималась `align-items: flex-end`, левая — по центру,
+ *     из-за чего логотип выравнивали костылём `margin-top`;
+ *   * ширины зон задавались процентами (33/34/33), а внутри них — снова
+ *     процентами, так что любое изменение содержимого сдвигало соседей;
+ *   * кнопки окна были 32px в высоту при системном стандарте 40px.
+ */
+
+.titlebar {
+	display: flex;
+	flex: none;
+	align-items: stretch;
+	height: var(--titlebar-height);
+	padding-left: 12px;
+	user-select: none;
+}
+
+/* ── Слева: знак, название, метка стадии ─────────────────────────────── */
+
+.titlebar_left {
+	display: flex;
+	flex: none;
+	align-items: center;
+}
+
+.titlebar_left_logo {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.titlebar_left_logo_ico {
+	width: 20px;
+	height: 20px;
+	background-image: var(--app-mark);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+
+.titlebar_left_logo_text {
+	font: 12px Rubik-Medium;
+	line-height: 1;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	/* Трекинг добавляет отступ справа от последней буквы — снимаем его,
+	   иначе зазор до метки визуально шире заданного */
+	margin-right: -0.1em;
+}
+
+.titlebar_left_logo_beta {
+	display: flex;
+	align-items: center;
+}
+
+.titlebar_left_logo_beta_text {
+	padding: 2px 7px;
+	font: 9px Rubik-Medium;
+	line-height: 1;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--color-gold);
+	border: 1px solid rgb(var(--gold-rgb) / 0.45);
+	border-radius: 100px;
+}
+
+/* ── По центру: область перетаскивания ───────────────────────────────── */
+
+.titlebar_center {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	/* Без этого длинное название слева распирало бы центр */
+	min-width: 0;
+}
+
+/* Содержимое центра — «капля», см. island.css */
+
+/* ── Справа: инструменты и кнопки окна ───────────────────────────────── */
+
+.titlebar_right {
+	display: flex;
+	flex: none;
+	align-items: stretch;
+}
+
+.titlebar_right_dops {
+	display: flex;
+	gap: 2px;
+	align-items: center;
+	margin-right: 8px;
+}
+
+.titlebar_right_dops_console,
+.titlebar_right_dops_notification,
+.titlebar_right_dops_settings {
+	display: flex;
+	width: 36px;
+	height: 30px;
+	align-items: center;
+	justify-content: center;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+/* Место кнопки консоли, когда она выключена в настройках */
+.titlebar_right_dops_console_use {
+	width: 36px;
+}
+
+.titlebar_right_dops_console:hover,
+.titlebar_right_dops_notification:hover,
+.titlebar_right_dops_settings:hover {
+	background-color: var(--color-hover);
+}
+
+/* Колокольчик несёт счётчик непрочитанного — ему нужна точка отсчёта */
+.titlebar_right_dops_notification {
+	position: relative;
+}
+
+.titlebar_notification_badge {
+	position: absolute;
+	top: 0;
+	right: 1px;
+	min-width: 14px;
+	height: 14px;
+	padding: 0 3px;
+	font: 9px Rubik-Medium;
+	line-height: 14px;
+	text-align: center;
+	color: var(--color-bg);
+	background-color: rgb(var(--gold-rgb));
+	border-radius: 100px;
+	/* Кружок не должен слипаться со значком под ним */
+	box-shadow: 0 0 0 2px var(--color-bg);
+}
+
+.titlebar_right_dops_console_ico,
+.titlebar_right_dops_notification_ico,
+.titlebar_right_dops_notification_ico_bing,
+.titlebar_right_dops_settings_img {
+	width: 22px;
+	height: 22px;
+	cursor: pointer;
+}
+
+/*
+ * Кнопки окна — во всю высоту полосы и шириной 46px, как принято в системе:
+ * попасть по ним нужно не глядя, поэтому цель делаем крупной.
+ */
+.titlebar_right_use {
+	display: flex;
+	align-items: stretch;
+}
+
+.titlebar_right_button_minimize,
+.titlebar_right_button_maximize,
+.titlebar_right_button_close {
+	display: flex;
+	width: 46px;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.titlebar_right_button_minimize:hover,
+.titlebar_right_button_maximize:hover {
+	background-color: var(--color-hover);
+}
+
+.titlebar_right_button_close:hover {
+	background-color: var(--color-danger);
+	/* Окно скруглено — подложка не должна вылезать за угол */
+	border-radius: 0 9px 0 0;
+}
+
+.titlebar_right_button_minimize_img,
+.titlebar_right_button_maximize_img,
+.titlebar_right_button_maximize_img_min,
+.titlebar_right_button_close_img {
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+}
+
+/* На красной подложке значок остаётся белым в обеих темах */
+.titlebar_right_button_close:hover .titlebar_right_button_close_img {
+	background-color: rgb(255, 255, 255);
+}
+
+.disabled {
+	pointer-events: none;
+	opacity: 0.5;
+}

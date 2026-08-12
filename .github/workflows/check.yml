@@ -1,0 +1,70 @@
+# Проверка кода.
+#
+# Идёт на каждый запрос на слияние и на каждую отправку в main. Собирать
+# установщик здесь не нужно: сборка ядра занимает минуты и десятки гигабайт, а
+# для «не сломано ли» довольно проверки типов и `cargo check`.
+#
+# Windows, а не Ubuntu: половина ядра под `#[cfg(windows)]`, и на Linux она
+# просто не компилируется — проверка была бы пустой.
+
+name: Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Новая отправка в ту же ветку отменяет предыдущий прогон: смысла проверять
+# устаревший код нет
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Interface
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      - name: Type check
+        run: bun run check
+
+  backend:
+    name: Core
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      # Кэш ставится до сборки и разделён по файлу блокировки: без него каждый
+      # прогон заново тянет и компилирует все зависимости, а их здесь сотни
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Format
+        working-directory: src-tauri
+        run: cargo fmt --check
+
+      - name: Check
+        working-directory: src-tauri
+        run: cargo check --all-targets
+
+      - name: Tests
+        working-directory: src-tauri
+        run: cargo test

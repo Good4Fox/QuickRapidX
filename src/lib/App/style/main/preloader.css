@@ -1,0 +1,194 @@
+/*
+ * Экран загрузки.
+ *
+ * Окно на этот момент имеет размер заставки (350×450) и вырастает до рабочего,
+ * когда ядро отработает. Поэтому раскладка здесь опирается на проценты и flex,
+ * а не на числа: один и тот же экран должен выглядеть собранно и в маленьком
+ * окне, и в первые кадры после роста.
+ */
+
+.qrx_load {
+	box-sizing: border-box;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 26px;
+	width: 100%;
+	height: 100%;
+	padding: 24px;
+	overflow: hidden;
+}
+
+/* ── Стрелки по краям ────────────────────────────────────────────────── */
+
+.qrx_load_arrows {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 6%;
+	pointer-events: none;
+}
+
+.qrx_load_arrow {
+	width: 54px;
+	height: 54px;
+	background-color: rgb(var(--gold-rgb));
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	/* Стрелки дышат навстречу молнии — движение мягкое, чтобы не спорить
+	   с кольцом прогресса в центре */
+	animation: qrx_load_breathe 2.6s ease-in-out infinite;
+	opacity: 0.5;
+}
+
+.qrx_load_arrow_left {
+	mask-image: url($lib/App/img/icons/Loading/Load_Left_Arrow.svg);
+}
+
+.qrx_load_arrow_right {
+	mask-image: url($lib/App/img/icons/Loading/Load_Right_Arrow.svg);
+	animation-delay: 0.3s;
+}
+
+@keyframes qrx_load_breathe {
+	0%,
+	100% {
+		opacity: 0.28;
+		transform: translateX(0);
+	}
+	50% {
+		opacity: 0.7;
+		transform: translateX(var(--shift, 6px));
+	}
+}
+
+.qrx_load_arrow_left {
+	--shift: 6px;
+}
+
+.qrx_load_arrow_right {
+	--shift: -6px;
+}
+
+/* ── Молния в кольце ─────────────────────────────────────────────────── */
+
+.qrx_load_core {
+	position: relative;
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 132px;
+	height: 132px;
+}
+
+.qrx_load_ring {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	/* Начало отсчёта сверху, а не справа */
+	transform: rotate(-90deg);
+}
+
+.qrx_load_ring_track {
+	fill: none;
+	stroke: rgb(var(--gold-rgb) / 0.14);
+	stroke-width: 3;
+}
+
+.qrx_load_ring_value {
+	fill: none;
+	stroke: var(--color-gold);
+	stroke-width: 3;
+	stroke-linecap: round;
+	/* Прогресс приходит шагами — сглаживаем, чтобы кольцо не дёргалось */
+	transition: stroke-dashoffset 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.qrx_load_bolt {
+	width: 54px;
+	height: 54px;
+	fill: var(--color-gold);
+	animation: qrx_load_pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes qrx_load_pulse {
+	0%,
+	100% {
+		opacity: 0.8;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1.05);
+	}
+}
+
+/* ── Шаг загрузки ────────────────────────────────────────────────────── */
+
+.qrx_load_status {
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	/* Фиксированная высота: смена подписи не должна дёргать раскладку */
+	height: 16px;
+}
+
+.qrx_load_step,
+.qrx_load_failed {
+	font: 10px Rubik-Medium;
+	text-transform: uppercase;
+	letter-spacing: 0.16em;
+	text-align: center;
+	color: var(--color-text);
+	opacity: 0.45;
+}
+
+.qrx_load_failed {
+	color: var(--color-danger);
+	text-transform: none;
+	letter-spacing: 0.03em;
+	opacity: 1;
+}
+
+/* ── Знак с названием ────────────────────────────────────────────────── */
+
+.qrx_load_brand {
+	position: absolute;
+	bottom: 28px;
+	display: flex;
+	gap: 9px;
+	align-items: center;
+}
+
+.qrx_load_brand_ico {
+	width: 22px;
+	height: 22px;
+	background-image: var(--app-mark);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+
+.qrx_load_brand_text {
+	font: 13px Rubik-Medium;
+	text-transform: uppercase;
+	letter-spacing: 0.2em;
+	/* Трекинг добавляет отступ справа от последней буквы — снимаем */
+	margin-right: -0.2em;
+	color: var(--color-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_load_arrow,
+	.qrx_load_bolt {
+		animation: none;
+	}
+}

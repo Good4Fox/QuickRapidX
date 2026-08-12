@@ -1,0 +1,41 @@
+name: Feature request
+description: Something the app should be able to do
+title: '[Idea] '
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before writing: seven areas are already planned and do not need a request —
+        Automation, System Info, Cleaning Tools, Registry Manager, Virus Shield,
+        Disk Stats and RGB Control. What helps there is a comment on *how* you
+        would want them to work, not that they should exist.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do
+      description: >
+        Describe the situation, not the solution. What are you doing today
+        instead, and what makes it awkward?
+      placeholder: >
+        After reinstalling Windows I go through a list in a text file and download
+        each program by hand. It takes an evening.
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: How you imagine it working
+      description: Where it would live in the app, what you would click, what would happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: instead
+    attributes:
+      label: What you considered instead
+      description: >
+        Other programs that do this, or another way the same problem could be
+        solved. Useful even when the answer is "nothing else fits".

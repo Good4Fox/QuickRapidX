@@ -1,0 +1,135 @@
+/* titlebar_tray */
+
+.titlebar_tray {
+    height: 49px;
+    user-select: none;
+    display: flex;
+    justify-content: space-around;
+	align-items: center;
+}
+
+.titlebar_tray_left {
+    width: 50%;
+	height: 49px;
+	display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.titlebar_tray_left_logo {
+    width: 75%;
+	height: 29.4px;
+	display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+}
+
+.titlebar_tray_left_logo_ico {
+    width: 23.4px;
+    height: 23.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	background-image: var(--app-mark);
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: cover;
+	margin: 0 4.9px 0 9.8px;
+}
+
+.titlebar_tray_left_logo_text {
+    width: auto;
+    height: auto;
+    font: 13.65px Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.titlebar_tray_right {
+    width: 40%;
+	height: 49px;
+	display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.titlebar_tray_right_use {
+    width: 50%;
+	height: 39.2px;
+	display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.titlebar_tray_right_button_close {
+    width: 23.4px;
+    height: 23.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	cursor: pointer;
+}
+
+.titlebar_tray_right_button_close_img {
+    width: 19.5px;
+    height: 19.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: cover;
+	cursor: pointer;
+}
+
+.titlebar_tray_right_button_close_img:hover {
+	background-color: var(--color-danger);
+	border-radius: 5px;
+}
+/* ── Правки геометрии полосы заголовка панели ─────────────────────────── */
+/*
+ * Три ошибки, найденные измерением, а не на глаз.
+ *
+ * 1. Полоса объявлена в 49 пикселей, а `--titlebar-height`, по которой
+ *    считается остаток окна, — 40. Выходило 49 + 450 = 499 в окне высотой 490,
+ *    и flex молча ужимал обе части: полоса ехала до 48.12, содержимое до
+ *    441.88. То есть ни одно объявленное число в этом окне не было правдой.
+ *    Правим тем же способом, что и подсказку трея, — по признаку `.tray_app`,
+ *    чтобы главного окна не задеть.
+ *
+ * 2. Правый край полосы был рассчитан на три кнопки, а осталась одна: блок в
+ *    50% от 40% ширины раскладывал её `space-evenly`, и справа от крестика
+ *    висело около 37 пикселей недосягаемого окна.
+ *
+ * 3. Подсветка наведения стояла на самой картинке, а она — маска. Красным
+ *    красился сам рисунок крестика, а не подложка под ним, и скругление на
+ *    маске не видно вовсе.
+ */
+.mine_home:has(.tray_app) .home {
+    height: calc(100dvb - 49px);
+}
+
+.titlebar_tray_right_use {
+    width: auto;
+    gap: 6px;
+    justify-content: flex-end;
+    padding-right: 9.8px;
+}
+
+.titlebar_tray_right_button_close {
+    border-radius: 6px;
+    transition: background-color 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.titlebar_tray_right_button_close:hover {
+    background-color: var(--color-danger);
+}
+
+/* Отменяем прежнюю подсветку самой маски: она красила рисунок, а не подложку */
+.titlebar_tray_right_button_close_img:hover {
+    background-color: var(--color-icon);
+    border-radius: 0;
+}

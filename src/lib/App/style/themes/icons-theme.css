@@ -1,0 +1,24 @@
+/*
+ * Всё, что осталось от подмены иконок по теме.
+ *
+ * Эта иконка многоцветная: в ней золото соседствует с белым или чёрным, и
+ * одной маской её не покрасить — форма маской берётся, а цвет один на всю
+ * фигуру. Поэтому здесь по-прежнему два файла и выбор по теме.
+ *
+ * Остальные 60 иконок стали масками и живут в `main/icons.css` одним правилом
+ * на обе темы.
+ */
+
+:root[data-theme='dark'] .AppStatsInfoStatsPanelInformationDownload {
+	background-image: url($lib/App/img/icons/Home/download_ico.svg);
+	background-repeat: no-repeat;
+	background-position: right center;
+	background-size: cover;
+}
+
+:root[data-theme='light'] .AppStatsInfoStatsPanelInformationDownload {
+	background-image: url($lib/App/img/icons/Home/icon/color/home/download_ico_black.svg);
+	background-repeat: no-repeat;
+	background-position: right center;
+	background-size: cover;
+}

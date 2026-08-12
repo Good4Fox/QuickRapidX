@@ -1,0 +1,689 @@
+/*
+ * Приветственный мастер.
+ *
+ * Сделан по образцу приветственного окна Windows 11 — того, что настраивает
+ * систему при первом запуске. Оттуда взяты не цвета, а четыре приёма, без
+ * которых оно рассыпается:
+ *
+ * 1. Ограниченная колонка на огромном фоне. Окно во весь экран, а содержимое —
+ *    столбец в 960 точек по центру. Пустота вокруг занимает больше половины
+ *    площади, и она намеренная: именно она говорит «система спокойна». Прежняя
+ *    раскладка была в `vw`, то есть на любом экране занимала одну и ту же долю
+ *    ширины — и на большом мониторе кнопка вырастала до четверти метра.
+ *    Поэтому здесь всё в точках, а `vh` оставлен только внешним отступам.
+ *
+ * 2. Один акцент на экран. Всё остальное — белый на трёх ступенях
+ *    прозрачности: 100 % для главного, 78,6 % для пояснений, 54,4 % для
+ *    служебного. Иерархия делается прозрачностью, а не цветом, — оттого
+ *    картинка тихая. Акцент у нас золотой, и он покрывает ровно две вещи:
+ *    главную кнопку и галочку выбранной карточки.
+ *
+ * 3. Сетка в 4 точки и ровно два скругления: 8 у поверхностей, 4 у органов
+ *    управления. Все отступы из ряда 4/8/12/16/24/32/40/48. Оттого разные
+ *    части выглядят выточенными из одного материала.
+ *
+ * 4. Глубина волосяной обводкой, а не тенью. Карточка отделяется от фона на
+ *    три процента яркости плюс линия в одну точку. Дёшево для отрисовки — а
+ *    размытие в WebView2 стоит дорого и здесь размывать всё равно нечего.
+ *
+ * Чего здесь нет намеренно: заглавных букв, теней, свечения, градиентов на
+ * кнопках, скруглений больше восьми, указателя «шаг 2 из 3», разъезжающихся по
+ * очереди карточек и любых постоянных анимаций.
+ */
+
+/*
+ * Ступени чернил — те же три, что у самой системы: сто процентов главному,
+ * семьдесят восемь пояснению, пятьдесят четыре служебному.
+ *
+ * Считаются от `--ink-rgb`, а не пишутся белым: на светлой теме белым по
+ * белому не видно ничего, и первым это заметил как раз шаг выбора темы.
+ * Поверхности тоже — те же пять процентов чернил поверх фона работают в обе
+ * стороны, только в тёмной они высветляют, а в светлой затемняют.
+ */
+.qrx_wiz {
+	--wiz-text: rgb(var(--ink-rgb));
+	--wiz-text-soft: rgb(var(--ink-rgb) / 0.786);
+	--wiz-text-dim: rgb(var(--ink-rgb) / 0.544);
+	--wiz-surface: rgb(var(--ink-rgb) / 0.05);
+	--wiz-surface-hover: rgb(var(--ink-rgb) / 0.084);
+	--wiz-surface-press: rgb(var(--ink-rgb) / 0.03);
+	--wiz-line: rgb(var(--ink-rgb) / 0.084);
+
+	position: fixed;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	background-color: var(--color-bg);
+	color: var(--wiz-text);
+	font-family: Rubik-Regular, sans-serif;
+}
+
+/*
+ * Звук — единственное, что живёт поверх раскладки. В углу, тихо.
+ *
+ * Сделан своим до последней части. Системный ползунок в Chromium приходит со
+ * своей серой полосой и круглой ручкой, которые не подчиняются ни одному
+ * нашему цвету, — посреди этого экрана он выглядел деталью из чужой формы.
+ *
+ * Устроен как один орган, а не как две вещи рядом: в покое это кнопка, при
+ * наведении из неё выезжает шкала. Пока звук не играет, шкалы нет вовсе —
+ * настраивать громкость тишины незачем.
+ */
+.qrx_wiz_sound {
+	position: absolute;
+	top: 24px;
+	right: 24px;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	transition:
+		background-color 160ms cubic-bezier(0.1, 0.9, 0.2, 1),
+		border-color 160ms cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.qrx_wiz_sound:hover {
+	border-color: var(--wiz-line);
+	background-color: var(--wiz-surface);
+}
+
+/*
+ * Шкала выезжает шириной, а не появляется скачком.
+ *
+ * Ширина анимируется дёшево, пока элемент один и лежит в своей строке: соседей
+ * у него нет, и пересчёт раскладки не расходится по экрану.
+ */
+.qrx_wiz_sound_slot {
+	overflow: hidden;
+	width: 0;
+	opacity: 0;
+	transition:
+		width 200ms cubic-bezier(0.1, 0.9, 0.2, 1),
+		opacity 160ms linear;
+}
+
+.qrx_wiz_sound:hover .qrx_wiz_sound_slot,
+.qrx_wiz_sound:focus-within .qrx_wiz_sound_slot {
+	width: 104px;
+	opacity: 1;
+}
+
+/*
+ * Своя шкала.
+ *
+ * Пройденная часть закрашена золотом прямо в фоне: доля приходит переменной
+ * `--fill` из разметки, и ни одного лишнего узла на это не нужно.
+ */
+.qrx_wiz_sound_slider {
+	display: block;
+	width: 96px;
+	height: 20px;
+	margin: 0 4px;
+	appearance: none;
+	background: transparent;
+	cursor: pointer;
+}
+
+.qrx_wiz_sound_slider::-webkit-slider-runnable-track {
+	height: 4px;
+	border-radius: 2px;
+	background: linear-gradient(
+		to right,
+		rgb(var(--gold-rgb)) 0 var(--fill, 30%),
+		rgb(var(--ink-rgb) / 0.2) var(--fill, 30%) 100%
+	);
+}
+
+.qrx_wiz_sound_slider::-webkit-slider-thumb {
+	width: 12px;
+	height: 12px;
+	/* Ручка встаёт по центру дорожки: половина её высоты минус половина
+	   толщины дорожки */
+	margin-top: -4px;
+	appearance: none;
+	border: none;
+	border-radius: 50%;
+	background: var(--wiz-text);
+	transition: transform 120ms cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.qrx_wiz_sound_slider:hover::-webkit-slider-thumb,
+.qrx_wiz_sound_slider:active::-webkit-slider-thumb {
+	transform: scale(1.25);
+}
+
+.qrx_wiz_sound_slider:focus-visible {
+	outline: 2px solid var(--color-gold);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+.qrx_wiz_sound_button {
+	width: 32px;
+	height: 32px;
+	flex: none;
+	border: none;
+	border-radius: 6px;
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 18px 18px;
+	cursor: pointer;
+	/* Выключенный звук приглушён до служебной ступени: он ничего не делает,
+	   и гореть ему незачем */
+	opacity: 0.544;
+	transition:
+		background-color 120ms linear,
+		opacity 120ms linear;
+}
+
+.qrx_wiz_sound_button:hover {
+	background-color: var(--wiz-surface-hover);
+	opacity: 1;
+}
+
+.qrx_wiz_sound_button:focus-visible {
+	outline: 2px solid var(--color-gold);
+	outline-offset: 2px;
+	opacity: 1;
+}
+
+.qrx_wiz_sound_on {
+	background-image: url($lib/App/img/icons/Creating_interaction/volume-high.svg);
+	opacity: 1;
+}
+
+.qrx_wiz_sound_off {
+	background-image: url($lib/App/img/icons/Creating_interaction/volume-cross.svg);
+}
+
+/*
+ * Уходящий и приходящий шаги лежат в одной клетке сетки.
+ *
+ * Иначе на время смены они встают друг под друга, высота скачком удваивается,
+ * и содержимое уезжает вверх прямо посреди перехода.
+ */
+.qrx_wiz_body {
+	display: grid;
+	flex: 1;
+	min-height: 0;
+}
+
+/* Полотно шага: содержимое по центру, командная полоса прижата ко дну */
+.qrx_wiz_stage {
+	display: flex;
+	grid-area: 1 / 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 48px 48px 0;
+	/* Минимум места до полосы кнопок, чтобы содержимое не липло к ней */
+	gap: 32px;
+	min-height: 0;
+}
+
+/*
+ * Шаг-пауза: «Добро пожаловать» и «Готово».
+ *
+ * У Windows это не страница, а остановка: крупная графика, крупный текст, одна
+ * кнопка и ничего больше. Оттого знак здесь и уместен во всю величину, хотя на
+ * шаге с карточками картинки нет вовсе — одна графическая точка на экран.
+ */
+.qrx_wiz_mark {
+	width: clamp(160px, 22vh, 280px);
+	height: clamp(160px, 22vh, 280px);
+	background-image: url($lib/App/img/avatar/Avatar_default.webp);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+
+.qrx_wiz_title {
+	margin: 0;
+	font: 600 40px/52px Rubik-Medium, sans-serif;
+	color: var(--wiz-text);
+	text-align: center;
+	text-wrap: balance;
+}
+
+.qrx_wiz_lead {
+	margin: 0;
+	font: 400 18px/24px Rubik-Regular, sans-serif;
+	color: var(--wiz-text-soft);
+	text-align: center;
+	text-wrap: balance;
+}
+
+/* Шаг с карточками: заголовок помельче, он тут не главный — выбор главный */
+.qrx_wiz_head {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	max-width: 960px;
+}
+
+.qrx_wiz_head .qrx_wiz_title {
+	font: 600 28px/36px Rubik-Medium, sans-serif;
+}
+
+.qrx_wiz_head .qrx_wiz_lead {
+	font: 400 14px/20px Rubik-Regular, sans-serif;
+	/* Переносы приходят из словаря вместе с текстом: каждый язык расставляет
+	   их по своей длине слов */
+	white-space: pre-line;
+}
+
+/*
+ * Карточки в две колонки.
+ *
+ * Прежде они шли столбцом с прокруткой, и шесть штук нельзя было увидеть
+ * разом — мастер читался как анкета, а не как выбор. У Windows правило жёсткое:
+ * если не влезает, уменьшают текст или делят на колонки, но не прокручивают.
+ */
+.qrx_wiz_cards {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+	width: 100%;
+	max-width: 960px;
+}
+
+.qrx_wiz_card {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 16px;
+	min-height: 96px;
+	padding: 16px;
+	border: 1px solid var(--wiz-line);
+	border-radius: 8px;
+	background-color: var(--wiz-surface);
+	color: inherit;
+	text-align: left;
+	cursor: pointer;
+	transition: background-color 120ms linear;
+}
+
+.qrx_wiz_card:hover {
+	background-color: var(--wiz-surface-hover);
+}
+
+/* Нажатое притухает, а не разгорается, и теряет обводку — так у Windows
+   получается ощущение вдавленной кнопки */
+.qrx_wiz_card:active {
+	border-color: transparent;
+	background-color: var(--wiz-surface-press);
+}
+
+.qrx_wiz_card:focus-visible {
+	outline: 2px solid var(--color-gold);
+	outline-offset: 2px;
+}
+
+.qrx_wiz_card_ico {
+	width: 36px;
+	height: 36px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+
+.qrx_wiz_card_text {
+	display: flex;
+	min-width: 0;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.qrx_wiz_card_name {
+	font: 500 14px/20px Rubik-Medium, sans-serif;
+	color: var(--wiz-text);
+}
+
+.qrx_wiz_card_note {
+	font: 400 14px/20px Rubik-Regular, sans-serif;
+	color: var(--wiz-text-soft);
+}
+
+/*
+ * Флажок ровно такой, как в системе: двадцать точек, скругление четыре,
+ * обводка в одну. Выбранный заливается акцентом целиком, обводка при этом
+ * исчезает, а галочка внутри — тёмная. Ни рамки вокруг карточки, ни свечения,
+ * ни увеличения: выбор показывает флажок, и только он.
+ */
+.qrx_wiz_check {
+	position: relative;
+	width: 20px;
+	height: 20px;
+	flex: none;
+	border: 1px solid var(--wiz-text-dim);
+	border-radius: 4px;
+	transition:
+		background-color 120ms linear,
+		border-color 120ms linear;
+}
+
+.qrx_wiz_card_on .qrx_wiz_check {
+	border-color: transparent;
+	background-color: rgb(var(--gold-rgb));
+}
+
+.qrx_wiz_check::after {
+	position: absolute;
+	top: 3px;
+	left: 6px;
+	width: 4px;
+	height: 9px;
+	border: solid var(--color-on-gold);
+	border-width: 0 2px 2px 0;
+	content: '';
+	opacity: 0;
+	transform: rotate(45deg);
+}
+
+.qrx_wiz_card_on .qrx_wiz_check::after {
+	opacity: 1;
+}
+
+/*
+ * Выбор темы.
+ *
+ * Три карточки в ряд, и в каждой — образчик самой темы, а не название словами.
+ * Тема одна из трёх, поэтому флажка тут нет: выбранная обведена акцентом, как
+ * у переключателя. Это единственное место, где акцент выходит за пределы
+ * главной кнопки, и оправдано это тем, что выбирают именно вид.
+ */
+.qrx_wiz_themes {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 12px;
+	width: 100%;
+	max-width: 720px;
+}
+
+.qrx_wiz_theme {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+	padding: 12px;
+	border: 1px solid var(--wiz-line);
+	border-radius: 8px;
+	background-color: var(--wiz-surface);
+	color: inherit;
+	text-align: left;
+	cursor: pointer;
+	transition:
+		background-color 120ms linear,
+		border-color 120ms linear;
+}
+
+.qrx_wiz_theme:hover {
+	background-color: var(--wiz-surface-hover);
+}
+
+.qrx_wiz_theme_on {
+	border-color: var(--color-gold);
+}
+
+.qrx_wiz_theme:focus-visible {
+	outline: 2px solid var(--color-gold);
+	outline-offset: 2px;
+}
+
+/* Образчик темы: полоса заголовка сверху и поле под ней — узнаваемо и стоит
+   двух градиентов, а не картинки */
+.qrx_wiz_theme_view {
+	width: 100%;
+	height: 72px;
+	margin-bottom: 8px;
+	border: 1px solid var(--wiz-line);
+	border-radius: 6px;
+}
+
+.qrx_wiz_theme_White .qrx_wiz_theme_view {
+	background: linear-gradient(to bottom, rgb(245 245 247) 0 22%, rgb(255 255 255) 22% 100%);
+}
+
+.qrx_wiz_theme_Black .qrx_wiz_theme_view {
+	background: linear-gradient(to bottom, rgb(32 34 40) 0 22%, rgb(14 15 18) 22% 100%);
+}
+
+/* Системная — половина на половину: она и значит «как в системе» */
+.qrx_wiz_theme_Systemic .qrx_wiz_theme_view {
+	background:
+		linear-gradient(to bottom, rgb(245 245 247) 0 22%, rgb(255 255 255) 22% 100%) left / 50% 100%
+			no-repeat,
+		linear-gradient(to bottom, rgb(32 34 40) 0 22%, rgb(14 15 18) 22% 100%) right / 50% 100%
+			no-repeat;
+}
+
+/*
+ * Строки настроек Windows.
+ *
+ * Тот же вид, что у карточки, только вместо флажка — переключатель из общей
+ * части программы: за ним стоят настоящие ключи реестра, и выглядеть он должен
+ * так же, как в настройках, а не по-своему.
+ */
+.qrx_wiz_rows {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+	max-width: 720px;
+}
+
+.qrx_wiz_row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	min-height: 64px;
+	padding: 12px 16px;
+	border: 1px solid var(--wiz-line);
+	border-radius: 8px;
+	background-color: var(--wiz-surface);
+	cursor: pointer;
+	transition: background-color 120ms linear;
+}
+
+.qrx_wiz_row:hover {
+	background-color: var(--wiz-surface-hover);
+}
+
+/*
+ * Командная полоса.
+ *
+ * Кнопки прижаты к правому нижнему углу — там их и ищут в Windows. Слева
+ * остаётся пустое место: оно не украшение, а часть той же меры воздуха.
+ */
+.qrx_wiz_bar {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 8px;
+	padding: 40px 48px;
+}
+
+/*
+ * Кнопка одна на весь мастер, разница между главной и второстепенной — только
+ * заливка. Ни размер, ни скругление, ни вес шрифта не меняются: кнопок-таблеток
+ * в Windows 11 нет нигде.
+ */
+.qrx_wiz_button {
+	height: 36px;
+	min-width: 140px;
+	padding: 0 16px;
+	border: 1px solid var(--wiz-line);
+	border-radius: 4px;
+	background-color: var(--wiz-surface);
+	font: 400 14px/20px Rubik-Regular, sans-serif;
+	color: var(--wiz-text);
+	cursor: pointer;
+	transition:
+		background-color 120ms linear,
+		opacity 120ms linear;
+}
+
+.qrx_wiz_button:hover {
+	background-color: var(--wiz-surface-hover);
+}
+
+.qrx_wiz_button:active {
+	border-color: transparent;
+	background-color: var(--wiz-surface-press);
+}
+
+.qrx_wiz_button:focus-visible {
+	outline: 2px solid var(--color-gold);
+	outline-offset: 2px;
+}
+
+.qrx_wiz_button_main {
+	border-color: transparent;
+	background-color: rgb(var(--gold-rgb));
+	/* Тёмный текст на золоте: белый на нём не читается, а второй акцентный
+	   цвет на экране убил бы весь приём */
+	color: var(--color-on-gold);
+}
+
+.qrx_wiz_button_main:hover {
+	background-color: rgb(var(--gold-rgb));
+	opacity: 0.9;
+}
+
+.qrx_wiz_button_main:active {
+	background-color: rgb(var(--gold-rgb));
+	opacity: 0.8;
+}
+
+/*
+ * Кнопка первого шага.
+ *
+ * Единственное место, где строгость системы работает против нас: на экране-
+ * паузе, где кроме знака и одной строки нет ничего, обычная кнопка в тридцать
+ * шесть точек теряется. Здесь она крупнее и с внутренней подсветкой сверху —
+ * тем самым приёмом Fluent, что имитирует свет сверху одной точкой. Это не
+ * украшение поверх системы, а её же деталь, показанная в полную силу.
+ *
+ * Скругление шесть, а не тридцать: кнопок-таблеток в Windows 11 нет нигде, и
+ * одна такая посреди экрана видна за километр.
+ */
+.qrx_wiz_button_hero {
+	height: 44px;
+	min-width: 200px;
+	padding: 0 28px;
+	border-radius: 6px;
+	font: 500 15px/20px Rubik-Medium, sans-serif;
+	/* Свет сверху одной точкой плюс мягкая тень в цвете самой кнопки: она не
+	   светится, а лежит на поверхности — тень появляется только под указателем */
+	box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16);
+	transition:
+		box-shadow 160ms cubic-bezier(0.1, 0.9, 0.2, 1),
+		transform 120ms cubic-bezier(0.1, 0.9, 0.2, 1),
+		opacity 120ms linear;
+}
+
+.qrx_wiz_button_hero:hover {
+	opacity: 1;
+	box-shadow:
+		inset 0 1px 0 rgb(255 255 255 / 0.24),
+		0 6px 20px rgb(var(--gold-rgb) / 0.28);
+}
+
+.qrx_wiz_button_hero:active {
+	opacity: 1;
+	transform: translateY(1px);
+	box-shadow:
+		inset 0 1px 0 rgb(255 255 255 / 0.12),
+		0 2px 8px rgb(var(--gold-rgb) / 0.2);
+}
+
+/*
+ * Выбор языка.
+ *
+ * Стоит в левом верхнем углу, напротив звука, и виден с первого кадра. Это не
+ * прихоть: мастер показывается раньше, чем человек доберётся до настроек, и до
+ * сих пор поменять язык на нём было нельзя ничем.
+ *
+ * Переключателем, а не выпадающим списком: языков три, и все три помещаются в
+ * строку. Список прятал бы два из них за нажатие, а человеку, который открыл
+ * программу на чужом языке, искать нечего — ему надо увидеть своё название
+ * сразу.
+ */
+.qrx_wiz_lang {
+	position: absolute;
+	top: 24px;
+	left: 24px;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	padding: 4px;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	transition:
+		background-color 160ms cubic-bezier(0.1, 0.9, 0.2, 1),
+		border-color 160ms cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.qrx_wiz_lang:hover {
+	border-color: var(--wiz-line);
+	background-color: var(--wiz-surface);
+}
+
+.qrx_wiz_lang_item {
+	height: 28px;
+	padding: 0 12px;
+	border: none;
+	border-radius: 6px;
+	background-color: transparent;
+	font: 400 13px/20px Rubik-Regular, sans-serif;
+	/* Невыбранные приглушены до служебной ступени — так видно, какой стоит */
+	color: var(--wiz-text-dim);
+	cursor: pointer;
+	transition:
+		background-color 120ms linear,
+		color 120ms linear;
+}
+
+.qrx_wiz_lang_item:hover {
+	background-color: var(--wiz-surface-hover);
+	color: var(--wiz-text);
+}
+
+.qrx_wiz_lang_item:focus-visible {
+	outline: 2px solid var(--color-gold);
+	outline-offset: 2px;
+}
+
+/* Выбранный не красится акцентом: акцент на экране один, и он у главной
+   кнопки. Здесь хватает полной яркости текста и подложки */
+.qrx_wiz_lang_on {
+	background-color: var(--wiz-surface-hover);
+	color: var(--wiz-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_wiz_card,
+	.qrx_wiz_button,
+	.qrx_wiz_check,
+	.qrx_wiz_sound,
+	.qrx_wiz_sound_slot,
+	.qrx_wiz_sound_button,
+	.qrx_wiz_sound_slider::-webkit-slider-thumb,
+	.qrx_wiz_lang,
+	.qrx_wiz_lang_item {
+		transition: none;
+	}
+
+	/* Подъём кнопки при нажатии — движение, а не отклик: его убираем.
+	   Подсветка и тень остаются, они ничего не двигают */
+	.qrx_wiz_button_hero:active {
+		transform: none;
+	}
+}

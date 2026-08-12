@@ -1,0 +1,33 @@
+/*
+ * Каркас окна: обёртка страницы и область содержимого под полосой заголовка.
+ * Экран загрузки переехал в preloader.css.
+ */
+
+/*
+ * Размер берётся от рамки окна, а не от вьюпорта.
+ *
+ * `#app` — рамка с границей в пиксель и `border-box`, то есть содержимого в
+ * ней 388 на 488, а `100dvw/100dvb` даёт 390 на 490. Разница уходила под
+ * `overflow: hidden` — правая и нижняя грани рамки срезались, и углы окна
+ * выглядели надкусанными.
+ */
+.mine_home {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: flex-start;
+	flex-direction: column;
+	align-self: flex-start;
+	overflow: hidden;
+}
+.home {
+    width: 100%;
+    /* Ровно остаток под полосой заголовка: раньше стояло 96dvb, что при
+       высоте полосы 40px давало переполнение по высоте окна */
+    height: calc(100dvb - var(--titlebar-height));
+    display: flex;
+    justify-content: flex-start;
+    /* stretch, иначе дочерний экран не растянется на всю высоту */
+    align-items: stretch;
+	overflow: hidden;
+}

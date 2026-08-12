@@ -1,0 +1,3010 @@
+/* Creating > Setting the interaction */
+.Creating_setting_interaction_sound {
+    min-width: 10vw;
+    width: auto;
+    height: 4vw;
+    top: 1vh;
+    right: 3vh;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: absolute;
+}
+
+.Creating_setting_interaction_sound_ico_high,
+.Creating_setting_interaction_sound_ico_cross {
+    width: 3vw;
+    height: 3vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.creating_audio_stats_volume {
+    width: 100%;
+    height: 5px;
+}
+
+.Creating_setting_interaction_home {
+    width: 100%;
+    height: 95vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Creating_setting_interaction_home_configuring_1 {
+    width: 100%;
+    height: 95vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.Creating_setting_interaction_home_configuring_1_avatar {
+    width: 25vw;
+    height: 25vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*
+     * Знак квадратный и обрезан по самому рисунку, поэтому `contain` по центру,
+     * а не `cover` по правому краю. Прежний файл был растром в оболочке SVG:
+     * картинка 1024×683 с запечёнными прозрачными полями внутри квадратного
+     * холста 3000×3000 — `cover` резал её по краям, а поля отодвигали рисунок
+     * от середины, и приходилось ловить его смещением вправо.
+     */
+    background-image: url($lib/App/img/avatar/Avatar_default.webp);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.Creating_setting_interaction_home_configuring_1_message {
+    width: 23.8vw;
+    height: 13vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url($lib/App/img/icons/Creating_interaction/message_start.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    flex-direction: column;
+}
+
+.Creating_setting_interaction_home_configuring_1_message_text_1 {
+    width: auto;
+    height: auto;
+    text-transform: uppercase;
+    font: 1.5vw Rubik-Medium;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0 15px 0;
+}
+
+.Creating_setting_interaction_home_configuring_1_message_text_2 {
+    width: auto;
+    height: auto;
+    text-transform: uppercase;
+    font: 1vw Rubik-Regular;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Creating_setting_interaction_home_configuring_1_button {
+    width: auto;
+    height: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Creating_setting_interaction_home_configuring_1_button_use {
+    width: 12vw;
+    height: 6vh;
+    background-color: rgba(0, 190, 117, 0.6);
+    border-radius: 30px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.Creating_setting_interaction_home_configuring_1_button_use:hover {
+    background-color: var(--color-success);
+}
+
+.Creating_setting_interaction_home_configuring_1_button_use_text {
+    width: auto;
+    height: auto;
+    font: 1.1vw Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Creating_setting_interaction_home_configuring_3_left {
+    width: 50%;
+    height: 96vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel {
+    width: 80%;
+    height: 85vh;
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 30px;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use {
+    width: 100%;
+    height: 75vh;
+    display: flex;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border-radius: 30px;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use::-webkit-scrollbar {
+	display: flex;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_text {
+    width: 100%;
+    height: 20vh;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_text_1,
+.Creating_setting_interaction_home_configuring_3_left_panel_use_text_1 {
+    width: auto;
+    height: auto;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 5px 0;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_text_1 {
+    font: 1.2vw Rubik-Medium;
+}
+.Creating_setting_interaction_home_configuring_3_left_panel_use_text_2 {
+    font: 1vw Rubik-Medium;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    /* Переносы живут внутри самой подписи обычным `\A`: прежде здесь стоял тег
+       <br> в разметке, и при переводе он вставал бы посреди чужой фразы */
+    white-space: pre-line;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_text_ico {
+    width: 3vw;
+    height: 3vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url($lib/App/img/icons/Cloud_save.svg);
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: cover;
+    margin: 15px 0 15px 0;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel {
+    width: 100%;
+    height: auto;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars {
+    width: 80%;
+    height: 15vh;
+    display: flex;
+    background-color: rgba(23, 25, 30, 0.6);
+    border-radius: 15px;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 0 0 2vw 0 ;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_1,
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_2,
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_3,
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_4,
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_5,
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_6 {
+    width: 4vw;
+    height: 4vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: cover;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_1 {
+    background-image: url($lib/App/img/icons/Creating_interaction/entertainment.svg);
+}
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_2 {
+    background-image: url($lib/App/img/icons/Creating_interaction/games.svg);
+}
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_3 {
+    background-image: url($lib/App/img/icons/Creating_interaction/school.svg);
+}
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_4 {
+    background-image: url($lib/App/img/icons/Creating_interaction/creativity.svg);
+}
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_5 {
+    background-image: url($lib/App/img/icons/Creating_interaction/business.svg);
+}
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_ico_6 {
+    background-image: url($lib/App/img/icons/Creating_interaction/family.svg);
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_text {
+    width: 60%;
+    height: 10vh;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_text_1,
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_text_2 {
+    width: auto;
+    height: auto;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 5px 0;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_text_1 {
+    font: 1vw Rubik-Medium;
+}
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_pars_text_2 {
+    font: 0.8vw Rubik-Medium;
+    color: rgba(255, 255, 255, 0.4);
+    /* То же, что и у подписи шага: переносы приходят из словаря вместе с
+       текстом, и каждый язык расставляет их по своей длине слов */
+    white-space: pre-line;
+}
+
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_input[type="checkbox"] {
+    appearance: none;
+    width: 2.2vw;
+    height: 2.2vw;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    cursor: pointer;
+    background-color: transparent;
+}
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_input[type="checkbox"]:checked {
+    background-color: transparent;
+}
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_input[type="checkbox"]::before {
+    content: "";
+    display: block;
+    width: 0.5vw;
+    height: 0.9vw;
+    border: solid rgb(255, 255, 255);
+    margin: 0 0 0.2vw 0;
+    border-radius: 1px;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    visibility: hidden;
+}
+.Creating_setting_interaction_home_configuring_3_left_panel_use_panel_input[type="checkbox"]:checked::before {
+    visibility: visible;
+}
+
+.Creating_setting_interaction_home_configuring_3_right {
+    width: 50%;
+    height: 96vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.Creating_setting_interaction_home_configuring_3_right_top {
+    width: 80%;
+    height: 65vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
+
+.Creating_setting_interaction_home_configuring_3_right_top_ico {
+    width: 30vw;
+    height: 30vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url($lib/App/img/icons/Creating_interaction/imforse.svg);
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: cover;
+}
+
+.Creating_setting_interaction_home_configuring_3_right_down {
+    width: 60%;
+    height: 20vh;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.Creating_setting_interaction_home_configuring_3_right_down_button {
+    width: 12vw;
+    height: 6vh;
+    background-color: rgba(0, 190, 117, 0.6);
+    border-radius: 30px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.Creating_setting_interaction_home_configuring_3_right_down_button:hover {
+    background-color: var(--color-success);
+}
+
+.Creating_setting_interaction_home_configuring_3_right_down_button_text {
+    width: auto;
+    height: auto;
+    font: 1.1vw Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Creating_setting_interaction_home_configuring_7 {
+    width: 100%;
+    height: 95vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.Creating_setting_interaction_home_configuring_7_avatar {
+    width: 25vw;
+    height: 25vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*
+     * Знак квадратный и обрезан по самому рисунку, поэтому `contain` по центру,
+     * а не `cover` по правому краю. Прежний файл был растром в оболочке SVG:
+     * картинка 1024×683 с запечёнными прозрачными полями внутри квадратного
+     * холста 3000×3000 — `cover` резал её по краям, а поля отодвигали рисунок
+     * от середины, и приходилось ловить его смещением вправо.
+     */
+    background-image: url($lib/App/img/avatar/Avatar_default.webp);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.Creating_setting_interaction_home_configuring_7_message {
+    width: 23.8vw;
+    height: 13vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url($lib/App/img/icons/Creating_interaction/message_start.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    flex-direction: column;
+}
+
+.Creating_setting_interaction_home_configuring_7_message_text_1 {
+    width: auto;
+    height: auto;
+    text-transform: uppercase;
+    font: 1.5vw Rubik-Medium;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0 15px 0;
+}
+
+.Creating_setting_interaction_home_configuring_7_message_text_2 {
+    width: auto;
+    height: auto;
+    text-transform: uppercase;
+    font: 1vw Rubik-Regular;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Creating_setting_interaction_home_configuring_7_button {
+    width: auto;
+    height: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Creating_setting_interaction_home_configuring_7_button_use {
+    width: 12vw;
+    height: 6vh;
+    background-color: rgba(0, 190, 117, 0.6);
+    border-radius: 30px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.Creating_setting_interaction_home_configuring_7_button_use:hover {
+    background-color: var(--color-success);
+}
+
+.Creating_setting_interaction_home_configuring_7_button_use_text {
+    width: auto;
+    height: auto;
+    font: 1.1vw Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* User home */
+.user_home {
+    /* Занимает всю область под полосой заголовка. Раньше высота была задана
+       жёстко (90vh -> 657px) при области в 690px, и снизу оставалась пустота.
+
+       box-sizing обязателен: в этом оформлении он global не задан (только у
+       #app), поэтому при content-box отступы прибавились бы к 100% и блок
+       вылез бы за область на свои 20px. */
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    gap: 10px;
+    padding: 10px;
+    align-items: stretch;
+}
+
+.user_home_left {
+    /* Ширина по содержимому: 6% + 95% справа давали 101% и переполнение */
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    /* Слева место под направляющую с бегунком */
+    padding: 0 6px 0 18px;
+
+    /*
+     * Шаг ряда задан здесь один раз: по нему считаются и отступы плиток, и
+     * ход бегунка. Иначе они разъезжаются при любой правке размера.
+     */
+    --rail-tile: 51.2px;
+    --rail-gap: 8.32px;
+    --rail-step: calc(var(--rail-tile) + var(--rail-gap));
+}
+
+/*
+ * Направляющая слева от меню. Тонкая линия во всю высоту ряда и золотой
+ * бегунок, который переезжает к выбранному разделу.
+ */
+.user_home_left_group {
+    position: relative;
+}
+
+.qrx_rail {
+    position: absolute;
+    top: 0;
+    left: -12px;
+    width: 2px;
+    /* Ровно по ряду: последняя плитка тянет за собой отступ, он лишний */
+    height: calc(var(--rail-step) * var(--rail-count) - var(--rail-gap));
+    background-color: rgb(var(--gold-rgb) / 0.15);
+    border-radius: 100px;
+}
+
+.qrx_rail_thumb {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    /* Длина бегунка задаётся рядом: у плиток меню он крупнее, у текстовых
+       строк в настройках — короче */
+    height: var(--rail-thumb, 26px);
+    /* По центру строки, напротив которой стоит */
+    top: calc((var(--rail-tile) - var(--rail-thumb, 26px)) / 2);
+    background-color: rgb(var(--gold-rgb));
+    border-radius: 100px;
+    transform: translateY(calc(var(--rail-index) * var(--rail-step)));
+    /*
+     * Ход заметный, но не вязкий. Кривая с лёгким выбегом за край: бегунок
+     * чуть проскакивает и возвращается — от этого движение читается живым,
+     * а не механическим.
+     */
+    transition: transform 420ms cubic-bezier(0.34, 1.28, 0.64, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .qrx_rail_thumb {
+        transition: none;
+    }
+}
+
+.user_home_left_use {
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.user_home_left_link {
+    position: relative;
+    box-sizing: border-box;
+    width: var(--rail-tile, 51.2px);
+    height: var(--rail-tile, 51.2px);
+    display: flex;
+    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 0 var(--rail-gap, 8.32px) 0;
+    cursor: pointer;
+}
+
+/*
+ * Активный раздел — золотая иконка. Подложки нет: где ты в ряду, показывает
+ * бегунок на направляющей слева, и заливать плитку сверх этого незачем.
+ *
+ * Золото малой прозрачности как подложка здесь не годится в принципе: поверх
+ * почти чёрного фона оно обесцвечивается в грязный горчичный.
+ */
+.user_home_left_link_active {
+    /* Иконки внутри — маски, они красятся этим значением */
+    --color-icon: var(--color-gold);
+}
+
+/* Разделы, которых ещё нет: приглушены и не отвечают на наведение */
+.user_home_left_link_soon {
+    cursor: default;
+    opacity: 0.35;
+}
+
+/*
+ * Наведение — нейтральная подложка, как у кнопок в полосе заголовка.
+ * Золота здесь нет намеренно: на тёмном фоне оно мутнеет и спорило бы с
+ * золотой иконкой активного раздела.
+ */
+.user_home_left_link:not(.user_home_left_link_soon):hover {
+    background-color: var(--color-hover);
+}
+
+.user_home_left_link_back {
+    width: 51.2px;
+    height: 51.2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 5px 0;
+}
+
+.user_home_left_link_back_ico_1,
+.user_home_left_link_back_ico_2,
+.user_home_left_link_back_ico_3,
+.user_home_left_link_back_ico_4,
+.user_home_left_link_back_ico_5,
+.user_home_left_link_back_ico_6,
+.user_home_left_link_back_ico_7,
+.user_home_left_link_back_ico_8,
+.user_home_left_link_back_ico_9 {
+    width: 38.4px;
+    height: 38.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user_home_right {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: stretch;
+}
+
+.user_home_right_panel {
+    /* Точка отсчёта для панели категорий внутри — см. .user_home_app_bottom */
+    position: relative;
+    /* Рамка иначе прибавилась бы к размеру: глобального box-sizing здесь нет */
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid var(--color-gold);
+    border-radius: 25px;
+}
+
+/* Home_App */
+.user_home_app_position {
+    width: 96%;
+    /* Следует за панелью: раньше здесь стояла её прежняя высота числом */
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user_home_app_center_panel {
+    width: 100%;
+    /* Следует за панелью: раньше здесь стояла её прежняя высота числом */
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+.user_home_app_center_panel_use {
+    width: 97.5%;
+    height: 642.4px;
+    display: flex;
+    align-items: flex-start;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 0;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.user_home_app_center_panel_use::-webkit-scrollbar {
+	display: flex;
+}
+
+.user_home_app_center_panel_search {
+    width: 100%;
+    height: 146px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user_home_app_center_panel_search_panel {
+    width: 100%;
+    height: 146px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.user_home_app_center_panel_search_panel_get {
+    width: 100%;
+    height: 3rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0 0 0 1rem;
+}
+
+.user_home_app_center_panel_search_panel_get_panel {
+    width: 40%;
+    height: 2.5rem;
+    background: var(--color-card);
+    border: 2px solid var(--color-gold);
+    backdrop-filter: blur(12.5px);
+    border-radius: 25px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.user_home_app_center_panel_search_panel_get_ico {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 1rem;
+}
+
+.user_home_app_center_panel_search_panel_get_text {
+    width: 85%;
+    height: 29.2px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    caret-color: var(--color-gold);
+    font: 0.8rem Rubik-Medium;
+}
+
+.user_home_app_center_panel_search_panel_get_text::placeholder {
+    text-transform: uppercase;
+    font: 0.8rem Rubik-Medium;
+    color: rgb(75, 75, 75);
+}
+
+.user_home_app_center_panel_search_panel_get_sorting {
+    width: 30%;
+    height: 36.5px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.user_home_app_center_panel_search_panel_get_info {
+    width: auto;
+    height: 36.5px;
+    font: 14.08px Rubik-Medium;
+    text-transform: uppercase;
+    white-space: nowrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 0 1rem;
+}
+
+.user_home_app_center_panel_search_panel_text {
+    width: auto;
+    height: 36.5px;
+    font: 14.08px Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 0 3rem;
+}
+
+.user_home_app_bottom {
+    width: 30%;
+    height: 116.8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /*
+     * Было `fixed` — привязка к окну. Но `transform` при переходе между
+     * разделами создаёт новую систему координат, и панель прыгала бы на
+     * каждом переключении. Привязываем к самой области содержимого.
+     */
+    position: absolute;
+    bottom: 2rem;
+}
+
+.user_home_app_bottom_motion {
+    width: 25%;
+    height: 0.3rem;
+    background-color: rgb(var(--gold-rgb));
+    border-radius: 100px;
+    cursor: pointer;
+}
+
+.user_home_app_bottom_down {
+    height: 21.9px;
+}
+
+.user_home_app_right_panel {
+    width: 90%;
+    height: 58.4px;
+    display: flex;
+    border-radius: 15px;
+    justify-content: space-evenly;
+    align-items: center;
+    border-width: 3.84px;
+    border: solid var(--color-gold);
+    margin: 1rem 5rem;
+}
+
+.user_home_app_right_panel::before { 
+    content: '';
+    position: absolute;
+    width: 91%;
+    height: 65.7px;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    z-index: -1;
+}
+
+.user_home_app_right_panel_button_1,
+.user_home_app_right_panel_button_2,
+.user_home_app_right_panel_button_3,
+.user_home_app_right_panel_button_4,
+.user_home_app_right_panel_button_5,
+.user_home_app_right_panel_button_6 {
+    width: 38.4px;
+    height: 38.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.user_home_app_right_panel_button_ico_1,
+.user_home_app_right_panel_button_ico_2,
+.user_home_app_right_panel_button_ico_3,
+.user_home_app_right_panel_button_ico_4,
+.user_home_app_right_panel_button_ico_5,
+.user_home_app_right_panel_button_ico_6,
+.user_home_app_right_panel_button_ico_1_color,
+.user_home_app_right_panel_button_ico_2_color,
+.user_home_app_right_panel_button_ico_3_color,
+.user_home_app_right_panel_button_ico_4_color,
+.user_home_app_right_panel_button_ico_5_color,
+.user_home_app_right_panel_button_ico_6_color {
+    width: 38.4px;
+    height: 38.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user_home_app_center_panel_use_add {
+    width: 102.4px;
+    height: 128px;
+    display: flex;
+    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 1rem 1rem 1rem;
+    box-sizing: border-box;
+}
+
+@keyframes colorShift {
+    0% { border-color: rgb(255, 0, 0); }
+    16% { border-color: rgb(255, 128, 0); }
+    33% { border-color: rgb(255, 255, 0); }
+    50% { border-color: rgb(0, 255, 0); }
+    66% { border-color: rgb(0, 128, 255); }
+    83% { border-color: rgb(0, 0, 255); } 
+    100% { border-color: rgb(255, 0, 255); }
+}
+
+.user_home_app_center_panel_use_add_use {
+    width: 102.4px;
+    height: 128px;
+    border-width: 3.84px;
+    border: solid rgb(160, 160, 160);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: colorShift 5s infinite alternate;
+}
+
+.user_home_app_center_panel_use_add_plus {
+    /* Единственное место, где наведение меняет размер. Раньше это
+       делал общий `transition: all`, снятый ради производительности —
+       здесь перечисляем свойства явно. */
+    transition:
+        width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+        height 300ms cubic-bezier(0.4, 0, 0.2, 1),
+        font-size 300ms cubic-bezier(0.4, 0, 0.2, 1),
+        background-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+        border-radius 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    width: 51.2px;
+    height: 51.2px;
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    font: 2rem Rubik-Light;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.user_home_app_center_panel_use_add_plus:hover {
+    width: 102.4px;
+    height: 128px;
+    border-radius: 15px;
+    font: 3rem Rubik-Light;
+}
+
+/* Home_App_panel_start */
+
+.Home_App_panel_start,
+.Home_App_panel_start_2 {
+    width: 102.4px;
+    height: 128px;
+    display: flex;
+    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 1rem 1rem 1rem;
+    box-sizing: border-box;
+}
+
+.Home_App_panel_start {
+    border: solid var(--color-gold);
+}
+.Home_App_panel_start_2 {
+    border: solid rgb(160, 160, 160);
+}
+
+.Home_App_panel_start_top {
+    width: 100%;
+    height: 76.8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Home_App_panel_start_top_left {
+    width: 25%;
+    height: 76.8px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.Home_App_panel_start_top_center {
+    width: 50%;
+    height: 76.8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Home_App_panel_start_top_right {
+    width: 25%;
+    height: 76.8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.HomeAppPanelStartSiteIco {
+    width: 25.6px;
+    height: 25.6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.HomeAppPanelStartIco {
+    width: 51.2px;
+    height: 51.2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Home_App_panel_start_text_A {
+    width: 100%;
+    height: 51.2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Home_App_panel_start_text_1 {
+    width: auto;
+    max-width: 80%;
+    height: auto;
+    font: 12.8px Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Home_App_panel_start_text_bottom {
+    width: 100%;
+    height: 38.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Home_App_panel_start_install_panel {
+    width: 85%;
+    height: 51.2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.HomeAppPanelStartInstallPanelDownloadPlusIco,
+.HomeAppPanelStartInstallPanelDownloadIco {
+    width: 25.6px;
+    height: 25.6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.Home_App_panel_start_text_B_lineNumbers {
+    width: 50%;
+    height: 219px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.Home_App_panel_start_text_B_lineNumbers_use {
+    width: 100%;
+    height: 365px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* HomeAppPanelStartInfo */
+.HomeAppPanelStartInfo {
+    width: 94%;
+    height: 657px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    overflow: hidden;
+    left: 57.6px;
+    bottom: 23.04px;
+    z-index: 9999;
+}
+
+.HomeAppPanelStartInfo_motion {
+    width: 88%;
+    height: 525.6px;
+    backdrop-filter: blur(4px);
+    border: 4px solid var(--color-gold);
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 0 89.6px 0;
+}
+
+.HomeAppPanelStartInfo_motion_tab {
+    width: 100%;
+    height: 73px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.HomeAppPanelStartInfo_motion_tab_left {
+    width: 70%;
+    height: 73px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.HomeAppPanelStartInfo_motion_tab_left_text {
+    width: auto;
+    height: auto;
+    font: 19.2px Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.HomeAppPanelStartInfo_motion_tab_use,
+.HomeAppPanelStartInfo_motion_tab_right {
+    width: 10%;
+    height: 73px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.HomeAppPanelStartInfo_motion_tab_right_use {
+    width: 50%;
+    height: 73px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.HomeAppPanelStartInfoMotionTabButtonClose {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0px 0 25.6px;
+}
+
+.HomeAppPanelStartInfoMotionTabButtonCloseIco,
+.HomeAppPanelStartInfoMotionTabButtonBackIco {
+    width: 38.4px;
+    height: 38.4px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.HomeAppPanelStartInfoMotionTabButtonCloseIco:hover,
+.HomeAppPanelStartInfoMotionTabButtonBackIco:hover {
+    background-color: rgba(255, 166, 0, 0.3);
+    border-radius: 5px;
+}
+
+.HomeAppPanelStartInfo_motion_panel {
+    width: 100%;
+    height: 452.6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* AppStatsInfo */
+.AppStatsNew,
+.AppStatsInfo,
+.AppStatsDelete,
+.AppStatsEditor {
+    width: 100%;
+    height: 452.6px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+}
+
+.AppStatsInfoPanelA {
+    width: 100%;
+    height: 146px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsInfoStats {
+    width: 100%;
+    height: 306.6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.AppStatsInfoPanelAName {
+    width: 100%;
+    height: 182.5px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsInfoPanelAICO {
+    width: 102.4px;
+    height: 102.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsInfoPanelAText {
+    width: auto;
+    height: 51.2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.4em 1em;
+}
+
+.AppStatsInfoPanelAText1 {
+    width: auto;
+    height: auto;
+    font: 25.6px Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsInfoStatsPanel {
+    width: 100%;
+    height: 51.1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsInfoStatsPanelInformation {
+    width: 30%;
+    height: 51.1px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.AppStatsInfoStatsPanelInformationText {
+    width: 30%;
+    height: auto;
+    font: 15.36px Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsInfoStatsPanelInformationDownloadPlus,
+.AppStatsInfoStatsPanelInformationDownload,
+.AppStatsInfoStatsPanelInformationEditor,
+.AppStatsInfoStatsPanelInformationRemove {
+    width: 38.4px;
+    height: 38.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.AppStatsInfoStatsPanelInformationDownloadPlus:hover,
+.AppStatsInfoStatsPanelInformationDownload:hover,
+.AppStatsInfoStatsPanelInformationEditor:hover,
+.AppStatsInfoStatsPanelInformationRemove:hover {
+    background-color: rgba(255, 166, 0, 0.3);
+}
+
+.AppStatsInfoStatsPanelText {
+    width: 95%;
+    height: 255.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsInfoStatsPanelText1 {
+    width: auto;
+    height: auto;
+    font: 12.8px Rubik-Medium;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsDeletePanel {
+    width: 60%;
+    height: 255.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.AppStatsDeletePanelText {
+    width: auto;
+    height: auto;
+    font: 15.36px Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsDeletePanelStatement {
+    width: 90%;
+    height: 109.5px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.AppStatsDeletePanelStatementButton1,
+.AppStatsDeletePanelStatementButton2 {
+    width: 182.5px;
+    height: 29.2px;
+    border-radius: 25px;
+    text-transform: uppercase;
+    font: 12.8px Rubik-Regular;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 0 29.2px 0 29.2px;
+}
+
+.AppStatsDeletePanelStatementButton1 {
+    border: 2px solid var(--color-success);
+}
+.AppStatsDeletePanelStatementButton2 {
+    border: 2px solid var(--color-danger-deep);
+}
+
+.AppStatsDeletePanelStatementButton1:hover {
+    background-color: var(--color-success);
+}
+.AppStatsDeletePanelStatementButton2:hover {
+    background-color: var(--color-danger-deep);
+}
+
+.AppStatsEditorPanel1 {
+    width: 80%;
+    height: 109.5px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.AppStatsEditorPanel1Element {
+    width: 102.4px;
+    height: 102.4px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.AppStatsEditorPanel1Element:hover {
+    background-color: rgba(255, 166, 0, 0.3);
+}
+
+.AppStatsEditorPanel1ElementICO1,
+.AppStatsEditorPanel1ElementICO2,
+.AppStatsEditorPanel1ElementICO3 {
+    width: 38.4px;
+    height: 38.4px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin: 7.3px 0 0 0;
+}
+
+.AppStatsEditorPanel1ElementText {
+    width: auto;
+    height: auto;
+    font: 12.8px Rubik-Medium;
+    text-align: center;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsEditorPanel2 {
+    width: 80%;
+    height: 219px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.AppStatsEditorPanel2Panel {
+    width: 100%;
+    height: 219px;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsEditorPanel2PanelUse {
+    width: 95%;
+    height: 197.1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.AppStatsEditorPanel2PanelUseText {
+    width: auto;
+    height: auto;
+    font: 14.08px Rubik-Medium;
+    text-align: center;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsEditorPanel2PanelUseElement {
+    width: 95%;
+    height: 146px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.AppStatsEditorPanel2PanelUseElementEdit {
+    width: 45%;
+    height: 29.2px;
+    text-align: center;
+    font: 15.36px Rubik-Medium;
+    margin: 0 0 0 10px;
+}
+
+.AppStatsEditorPanel2PanelUseElementEditA {
+    width: 60%;
+    height: 102.2px;
+    text-align: start;
+    font: 15.36px Rubik-Medium;
+    padding: 7.3px 21.9px;
+    margin: 0 0 0 10px;
+}
+
+.AppStatsEditorPanel2PanelUseGet {
+    width: 95%;
+    height: 36.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.AppStatsEditorPanel2PanelUseGetICO1,
+.AppStatsEditorPanel2PanelUseGetICO2 {
+    width: 38.4px;
+    height: 38.4px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.AppStatsEditorPanel2PanelUseGetICO1:hover,
+.AppStatsEditorPanel2PanelUseGetICO2:hover {
+    background-color: rgba(255, 166, 0, 0.3);
+}
+
+.AppStatsEditorPanel3 {
+    width: 60%;
+    height: 73px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.AppStatsEditorPanel3Button1,
+.AppStatsEditorPanel3Button2 {
+    width: 219px;
+    height: 36.5px;
+    border-radius: 25px;
+    text-transform: uppercase;
+    font: 14.08px Rubik-Regular;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0 29.2px 0 29.2px;
+}
+
+.AppStatsEditorPanel3Button1 {
+    border: 2px solid var(--color-danger-deep);
+}
+.AppStatsEditorPanel3Button2 {
+    border: 2px solid var(--color-success);
+}
+
+.AppStatsEditorPanel3Button1:hover {
+    background-color: var(--color-danger-deep);
+}
+.AppStatsEditorPanel3Button2:hover {
+    background-color: var(--color-success);
+}
+
+.AppStatsNewPanel {
+    width: 98%;
+    height: 438px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsNewPanelHomeStart {
+    width: 230.4px;
+    height: 307.2px;
+    display: flex;
+    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 1rem 1rem 1rem;
+    box-sizing: border-box;
+    border: solid 0.3em var(--color-gold);
+    cursor: pointer;
+}
+
+.AppStatsNewPanelHomeStart:hover {
+    background-color: rgb(var(--gold-rgb) / 0.05);
+    animation: colorShift 5s infinite alternate;
+}
+
+.AppStatsNewPanelHomeStartICO {
+    width: 76.8px;
+    height: 76.8px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.AppStatsNewPanelHomeStartText {
+    width: 80%;
+    height: 36.5px;
+    font: 17.92px Rubik-Medium;
+    text-align: center;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem 0 0 0;
+}
+
+.AppStatsNewPanelCYE {
+    width: 100%;
+    height: 452.6px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+}
+
+.AppStatsNewPanelCYESearchPanelGetText {
+    width: 85%;
+    height: 29.2px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    caret-color: var(--color-gold);
+    font: 0.8rem Rubik-Medium;
+}
+
+.AppStatsNewPanelCYESearchPanelGetText::placeholder {
+    text-transform: uppercase;
+    font: 0.8rem Rubik-Medium;
+    color: rgb(160, 160, 160);
+}
+
+.AppStatsNewPanelCYEPanel {
+    width: 97.5%;
+    height: 642.4px;
+    display: flex;
+    align-items: flex-start;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 0;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.AppStatsNewPanelCYEPanel::-webkit-scrollbar {
+	display: flex;
+}
+
+.AppStatsNewPanelCYEPanelApp {
+    width: 166.4px;
+    height: 307.2px;
+    display: flex;
+    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 1rem 1rem 1rem;
+    box-sizing: border-box;
+    border: solid var(--color-gold);
+    cursor: pointer;
+}
+
+.AppStatsNewPanelCYEPanelAppLoading {
+    width: 100%;
+    height: 328.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsNewPanelCYEPanelAppContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.AppStatsNewPanelCYEPanelAppLoader {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    perspective: 800px;
+}
+
+.AppStatsNewPanelCYEPanelCrystal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    opacity: 0;
+    transform-origin: bottom center;
+    transform: translate(-50%, -50%) rotateX(45deg) rotateZ(0deg);
+    animation: spin 4s linear infinite, emerge 2s ease-in-out infinite alternate,
+        fadeIn 0.3s ease-out forwards;
+    border-radius: 10px;
+visibility: hidden;
+}
+
+@keyframes spin {
+    from {
+        transform: translate(-50%, -50%) rotateX(45deg) rotateZ(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotateX(45deg) rotateZ(360deg);
+    }
+}
+
+@keyframes emerge {
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        visibility: visible;
+        opacity: 0.8;
+    }
+}
+
+.AppStatsNewPanelCYEPanelCrystal:nth-child(1) {
+    background: linear-gradient(45deg, #ff7f00, #ff9933);
+    animation-delay: 0s;
+}
+
+.AppStatsNewPanelCYEPanelCrystal:nth-child(2) {
+    background: linear-gradient(45deg, #ff8000, #ffb733);
+    animation-delay: 0.3s;
+}
+
+.AppStatsNewPanelCYEPanelCrystal:nth-child(3) {
+    background: linear-gradient(45deg, #ff8c00, #ffcc66);
+    animation-delay: 0.6s;
+}
+
+.AppStatsNewPanelCYEPanelCrystal:nth-child(4) {
+    background: linear-gradient(45deg, #ff9900, #ffd699);
+    animation-delay: 0.9s;
+}
+
+.AppStatsNewPanelCYEPanelCrystal:nth-child(5) {
+    background: linear-gradient(45deg, #ffb300, #ffe6cc);
+    animation-delay: 1.2s;
+}
+
+.AppStatsNewPanelCYEPanelCrystal:nth-child(6) {
+    background: linear-gradient(45deg, #ffcc00, #ffffcc);
+    animation-delay: 1.5s;
+}
+
+.AppStatsNewPanelCYEPanelAppTop {
+    width: 100%;
+    height: 128px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsNewPanelCYEPanelAppTopLeft {
+    width: 25%;
+    height: 76.8px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.AppStatsNewPanelCYEPanelAppTopCenter {
+    width: 50%;
+    height: 76.8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsNewPanelCYEPanelAppICO {
+    width: 76.8px;
+    height: 76.8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsNewPanelCYEPanelAppTopRight {
+    width: 25%;
+    height: 76.8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.AppStatsNewPanelCYEPanelAppName {
+    width: 100%;
+    height: 128px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AppStatsNewPanelCYEPanelAppNameText {
+    width: auto;
+    max-width: 80%;
+    height: auto;
+    font: 12.8px Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.AppStatsNewPanelCYEPanelAppTopBottom {
+    width: 100%;
+    height: 38.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Home_automation */
+.Home_automation {
+    width: 100%;
+    height: 620.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Home_automation_left {
+    width: 8%;
+    height: 620.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.Home_automation_left_panel {
+    width: 60%;
+    height: 620.5px;
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.Home_automation_button_close {
+    cursor: pointer;
+}
+
+.Home_automation_center {
+    width: 90%;
+    height: 657px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Home_automation_center_panel {
+    width: 100%;
+    height: 620.5px;
+    display: flex;
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.Home_automation_center_panel_text_1 {
+    width: 50%;
+    height: 36.5px;
+    font: 19.2px Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0 0 0;
+}
+
+.Home_automation_center_panel_text_2 {
+    width: 50%;
+    height: 29.2px;
+    font: 14.08px Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Home_automation_center_panel_text_3 {
+    width: auto;
+    max-width: 85%;
+    height: auto;
+    font: 12.8px Rubik-Medium;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: normal;
+}
+
+.Home_automation_right {
+    width: 8%;
+    height: 657px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Home_automation_right_panel {
+    width: 60%;
+    height: 620.5px;
+    display: flex;
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Settings */
+
+/*
+ * Каркас экрана настроек — тот же, что у главного: колонка иконок по
+ * содержимому слева, тянущаяся область справа.
+ *
+ * Раньше здесь стояли доли 6% + 95% (в сумме 101%, отсюда переполнение) и
+ * высоты числом — 657 / 642.4 / 584 / 547.5px, посчитанные от прежнего окна и
+ * ни разу не пересчитанные. Главный экран от этого уже ушёл.
+ */
+.app_settings {
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    gap: 10px;
+    padding: 10px;
+    align-items: stretch;
+}
+
+.app_settings_home_left {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    /* Слева место под направляющую с бегунком */
+    padding: 0 6px 0 18px;
+
+    /* Шаг ряда задан один раз: по нему считаются и отступы плиток, и ход
+       бегунка. Значения те же, что в меню главного экрана. */
+    --rail-tile: 51.2px;
+    --rail-gap: 8.32px;
+    --rail-step: calc(var(--rail-tile) + var(--rail-gap));
+}
+
+/* Точка отсчёта для направляющей */
+.app_settings_home_left_use {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.app_settings_home_left_link {
+    position: relative;
+    box-sizing: border-box;
+    width: var(--rail-tile, 51.2px);
+    height: var(--rail-tile, 51.2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    margin: 0 0 var(--rail-gap, 8.32px) 0;
+    cursor: pointer;
+}
+
+/*
+ * Активный раздел — золотая иконка, как в меню главного экрана. Подложки нет:
+ * где ты в ряду, показывает бегунок на направляющей слева.
+ */
+.app_settings_home_left_link_active {
+    --color-icon: var(--color-gold);
+}
+
+.app_settings_home_left_link:hover {
+    background-color: var(--color-hover);
+}
+
+.app_settings_home_left_link_back {
+    width: 51.2px;
+    height: 51.2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app_settings_home_left_link_back_ico_1,
+.app_settings_home_left_link_back_ico_2,
+.app_settings_home_left_link_back_ico_3 {
+    width: 38.4px;
+    height: 38.4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app_settings_home_right {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: stretch;
+}
+
+/*
+ * Единственная рамка экрана — та же, что у .user_home_right_panel на главной.
+ * Внутри рамок-контейнеров больше нет: обрамление получает предмет (строка
+ * настройки, кнопка), но не колонка. Прежде здесь было три вложенных золотых
+ * рамки подряд — 4px вокруг 2px вокруг 2px, все радиусом 25px.
+ *
+ * position задан ради плашки перезахода в настройках Windows: она absolute, а
+ * позиционированного предка у неё не было — цеплялась за весь экран.
+ */
+.app_settings_home_right_panel {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    border: 4px solid var(--color-gold);
+    border-radius: 25px;
+}
+
+/* ── Раскладка раздела: список слева, содержимое справа ──────────────── */
+
+.qrx_set {
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    /* Обёртка перехода центрирует детей — без этого высота села бы по
+       содержимому и прокручиваться стало бы нечему */
+    height: 100%;
+    gap: 6px;
+    padding: 20px 0;
+}
+
+/*
+ * Список разделов. Собственной рамки не имеет — вместо неё направляющая с
+ * бегунком, тот же приём, что и в левом меню. Метрика ряда своя: строки
+ * текстовые и ниже плиток.
+ */
+.qrx_set_nav {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    align-items: stretch;
+    width: 210px;
+    padding: 2px 14px 2px 32px;
+
+    --rail-tile: 34px;
+    --rail-gap: 4px;
+    --rail-step: calc(var(--rail-tile) + var(--rail-gap));
+    --rail-thumb: 16px;
+}
+
+/* Направляющая прижата к левому краю колонки, а не к её содержимому */
+.qrx_set_nav .qrx_rail {
+    top: 2px;
+    left: 16px;
+}
+
+.qrx_set_nav_link {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: var(--rail-tile);
+    margin: 0 0 var(--rail-gap) 0;
+    padding: 0 12px;
+    font: 12.8px Rubik-Medium;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--color-text);
+    opacity: 0.45;
+    border-radius: 10px;
+    cursor: pointer;
+    transition:
+        opacity 180ms cubic-bezier(0.4, 0, 0.2, 1),
+        background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_set_nav_link:hover {
+    background-color: var(--color-hover);
+    opacity: 0.85;
+}
+
+.qrx_set_nav_link_active {
+    color: var(--color-gold);
+    opacity: 1;
+}
+
+/*
+ * Содержимое раздела. position — чтобы якоря заголовков считали offsetTop от
+ * него: по этому числу бегунок следит за прокруткой.
+ */
+.qrx_set_body {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    /* Полоса прокрутки не должна вставать вплотную к рамке окна — см. .qrx_about */
+    margin-right: 10px;
+    padding: 0 0 24px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/*
+ * Прокрутка в настройках. Общая полоса в приложении — сплошное золото в 4px, и
+ * рядом с золотой рамкой окна она выглядела её продолжением. Здесь полоса
+ * приглушена и набирает цвет, только когда курсор над областью.
+ */
+.qrx_about::-webkit-scrollbar,
+.qrx_set_body::-webkit-scrollbar {
+    display: block;
+    width: 6px;
+}
+
+.qrx_about::-webkit-scrollbar-track,
+.qrx_set_body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.qrx_about::-webkit-scrollbar-thumb,
+.qrx_set_body::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--gold-rgb) / 0.28);
+    border-radius: 100px;
+    box-shadow: none;
+    transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_about:hover::-webkit-scrollbar-thumb,
+.qrx_set_body:hover::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--gold-rgb) / 0.6);
+}
+
+.qrx_set_head {
+    box-sizing: border-box;
+    width: 85%;
+    padding: 10px 0 0 0;
+    font: 15.36px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-text);
+}
+
+.qrx_set_head:first-child {
+    padding-top: 0;
+}
+
+/*
+ * Строка настройки — предмет, а не контейнер: рамка в 2px золотом и матовая
+ * подложка с размытием, та же пара, что у поля поиска и у плиток стартовой.
+ * Именно подложки раньше и не было — рамка тянула всё одна, и вложенные
+ * рамки читались коробкой в коробке.
+ */
+.qrx_set_row {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    width: 85%;
+    padding: 16px 22px;
+    background: var(--color-card);
+    border: 2px solid var(--color-gold);
+    border-radius: 25px;
+    backdrop-filter: blur(12.5px);
+}
+
+/* Блок с широким содержимым внутри — заголовок сверху, остальное под ним */
+.qrx_set_row_stack {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+}
+
+/* Верхняя строка такого блока: название слева, переключатель справа */
+.qrx_set_row_head {
+    display: flex;
+    /* Переключателю с четырьмя пунктами в узкой строке места не хватает, а
+       ужиматься он не умеет: подписи в нём не переносятся. Пусть лучше уходит
+       на свою строку целиком, чем обрезается посередине слова */
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.qrx_set_row_text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.qrx_set_row_title {
+    font: 14.08px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-text);
+}
+
+.qrx_set_row_note {
+    font: 10.24px Rubik-Medium;
+    text-transform: uppercase;
+    /* Приглушение прозрачностью поверх цвета темы: жёстко заданный белый на
+       светлой теме пропадал */
+    color: var(--color-text);
+    opacity: 0.5;
+}
+
+/* Правая часть строки: переключатель, кружки тем, кнопки */
+.qrx_set_row_controls {
+    display: flex;
+    flex: none;
+    gap: 15px;
+    align-items: center;
+}
+
+
+
+
+
+
+
+/* Тени здесь было две подряд, обе бесполезные: первая перекрыта второй,
+   вторая целиком прозрачная. Рамка объявлялась после border: none. */
+.app_settings_home_right_panel_right_panel_panel_lang_use {
+    box-sizing: border-box;
+    width: 192px;
+    height: 29.2px;
+    background: transparent;
+    text-transform: uppercase;
+    outline: none;
+    border: 2px solid var(--color-gold);
+    border-radius: 15px;
+    font: 14.08px Rubik-Regular;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * Настройки Windows пользуются общей раскладкой раздела (.qrx_set / .qrx_set_nav
+ * / .qrx_set_body / .qrx_set_row). Прежде у них была своя копия тех же
+ * контейнеров — с рамкой в 2px вокруг колонки, в которой лежал один-единственный
+ * неактивный пункт.
+ */
+
+/*
+ * Плашка «нужен перезаход». Absolute — но теперь у неё есть позиционированный
+ * предок (.app_settings_home_right_panel). Раньше его не было, и плашка
+ * цеплялась за весь экран, а из-под неё содержимое выталкивали распоркой.
+ */
+.app_settings_home_windows_right_panel_right_accept {
+    box-sizing: border-box;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    max-width: calc(100% - 48px);
+    padding: 10px 16px;
+    background-color: rgb(var(--gold-dim-rgb) / 0.2);
+    backdrop-filter: blur(4px);
+    border-radius: 15px;
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    z-index: 20;
+}
+
+.app_settings_home_windows_right_panel_right_accept_button {
+    box-sizing: border-box;
+    padding: 8px 18px;
+    border: 2px solid var(--color-gold);
+    border-radius: 25px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font: 12.8px Rubik-Medium;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app_settings_home_windows_right_panel_right_accept_button:hover {
+    background-color: var(--color-hover);
+}
+
+
+
+
+
+/* Команда переключается щелчком — приглушённая рамка это подсказывает */
+
+
+
+
+.qrx_win_button {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 22px;
+    border: 2px solid var(--color-gold);
+    border-radius: 25px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font: 12.8px Rubik-Medium;
+    cursor: pointer;
+    transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_win_button:hover {
+    background-color: var(--color-hover);
+}
+
+/* ── Настройки Windows: цвет рамки выделения ─────────────────────────── */
+
+
+/* Кусочек рабочего стола: файл, рамка выделения поверх него и курсор */
+.qrx_win_box_preview {
+    position: relative;
+    box-sizing: border-box;
+    flex: none;
+    width: 212px;
+    height: 152px;
+    overflow: hidden;
+    background-color: var(--color-panel);
+    border-radius: 15px;
+}
+
+/*
+ * Ярлык на «рабочем столе».
+ *
+ * Подложки в покое нет: в Windows она появляется только под выделенным или
+ * подсвеченным значком. Постоянная полупрозрачная заливка читалась так, будто
+ * ярлык всё время выделен, — и протяжка начиналась прямо с него, чего мышью не
+ * сделать: с ярлыка начинается перетаскивание, а не выделение.
+ *
+ * Ярлык стоит справа внизу, чтобы рамка начиналась с пустого места и наезжала
+ * на него по ходу.
+ */
+.qrx_win_box_file {
+    position: absolute;
+    top: 62px;
+    left: 118px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
+}
+
+.qrx_win_box_file_ico {
+    width: 38.4px;
+    height: 38.4px;
+    background-image: url($lib/App/img/icons/Settings/Folder_files_ico.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.qrx_win_box_file_text {
+    font: 10.24px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-text);
+}
+
+/* Цвета приходят из полей ввода, поэтому задаются в разметке */
+/* Размер задаёт анимация протяжки — см. qrx_sel_pull */
+.qrx_win_box_rect {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    box-sizing: border-box;
+    /* Совпадает с концом протяжки: при выключенной анимации рамка остаётся
+       ровно там, где её оставил курсор */
+    width: 160px;
+    height: 112px;
+    border-radius: 3px;
+}
+
+/*
+ * Запасная стрелка: показывается, когда настоящий курсор прочитать не вышло.
+ * Место ей задаёт обёртка с анимацией протяжки, поэтому своих координат у неё
+ * нет — только размер. Кончик у этого рисунка в левом верхнем углу, как и у
+ * точки привязки настоящей стрелки.
+ */
+.qrx_win_box_cursor {
+    width: 25.6px;
+    height: 25.6px;
+    background-image: url($lib/App/img/icons/Settings/Mouse_move_folder_ico.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+
+.qrx_win_field {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.qrx_win_field_label {
+    font: 12.8px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-text);
+    opacity: 0.6;
+}
+
+.qrx_win_field_input {
+    box-sizing: border-box;
+    width: 140px;
+    padding: 3px 10px;
+    text-align: center;
+    font: 14.08px Rubik-Medium;
+}
+
+/*
+ * «О программе» списка разделов не имеет, поэтому раскладку задаёт сам. Высоты
+ * были числом (584 / 365 / 328.5px) — при переключении разделов ширина области
+ * прыгала, потому что здесь нет колонки списка.
+ */
+/* ── О программе ─────────────────────────────────────────────────────── */
+
+/*
+ * Раздел собран из тех же карточек, что и остальные настройки: рамка в 2px
+ * золотом, радиус 25px, матовая подложка с размытием.
+ *
+ * Было иначе: одна тёмная плита на всю ширину, внутри неё две половины, и при
+ * нажатии «подробнее» левая половина исчезала через display: none, а правая
+ * раздувалась до width: 350% с отступом в 15vh — содержимое прыгало через весь
+ * экран. Аватар при этом менял размер с 14vw на 8vw. Здесь карточка просто
+ * становится выше.
+ */
+
+.qrx_about {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    /* Отступ от краёв — чтобы полоса прокрутки не вставала вплотную к рамке
+       окна: она золотая и той же толщины, и рядом с рамкой читалась второй
+       линией. Особенно заметно, когда рассказ об авторе развёрнут. */
+    width: calc(100% - 20px);
+    margin: 0 10px;
+    height: 100%;
+    padding: 24px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.qrx_about_card {
+    box-sizing: border-box;
+    width: 85%;
+    padding: 22px 26px;
+    background: var(--color-card);
+    border: 2px solid var(--color-gold);
+    border-radius: 25px;
+    backdrop-filter: blur(12.5px);
+}
+
+/* ── Знак и название ─────────────────────────────────────────────────── */
+
+.qrx_about_hero {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+}
+
+/*
+ * Знак приложения. Прежде на его месте стоял аватар 192×192 с
+ * background-size: cover и анимацией на пять секунд при каждом открытии.
+ */
+.qrx_about_mark {
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    justify-content: center;
+    align-items: center;
+    width: 89.6px;
+    height: 89.6px;
+    background-color: rgb(var(--gold-rgb) / 0.08);
+    border-radius: 22px;
+    cursor: pointer;
+}
+
+.qrx_about_mark_ico {
+    width: 51.2px;
+    height: 51.2px;
+    background-image: var(--app-mark);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.qrx_about_id {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.qrx_about_name {
+    font: 25.6px Rubik-Medium;
+    text-transform: uppercase;
+    line-height: 1;
+    color: var(--color-text);
+}
+
+.qrx_about_role {
+    font: 12.8px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-text);
+    opacity: 0.5;
+}
+
+/* Метки версии и лицензии */
+.qrx_about_tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.qrx_about_tag {
+    box-sizing: border-box;
+    padding: 4px 14px;
+    font: 10.24px Rubik-Medium;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-gold);
+    border: 2px solid rgb(var(--gold-rgb) / 0.45);
+    border-radius: 100px;
+}
+
+/* Метка открытого кода кликабельна — ведёт в репозиторий */
+.qrx_about_tag_link {
+    cursor: pointer;
+    transition:
+        background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+        color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_about_tag_link:hover {
+    color: rgb(14, 15, 18);
+    background-color: rgb(var(--gold-rgb));
+    border-color: var(--color-gold);
+}
+
+/* ── Кнопки ──────────────────────────────────────────────────────────── */
+
+.qrx_about_button {
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    padding: 9px 22px;
+    font: 12.8px Rubik-Medium;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-text);
+    border: 2px solid var(--color-gold);
+    border-radius: 100px;
+    cursor: pointer;
+    transition:
+        background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+        color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_about_button:hover {
+    background-color: rgb(var(--gold-rgb));
+    /* Тёмный числом, а не токеном: на светлой теме --color-bg белый */
+    color: rgb(14, 15, 18);
+}
+
+/*
+ * Скрытая строка — открывается щелчком по знаку.
+ *
+ * Оранжевая, как и была в исходном приложении: этим цветом она и отличалась от
+ * всего остального в интерфейсе, где кроме золота ничего нет.
+ */
+.qrx_about_secret {
+    box-sizing: border-box;
+    width: 85%;
+    padding: 2px 0 6px;
+    font: 12.8px Rubik-Regular;
+    text-align: center;
+    color: rgb(255, 165, 0);
+    animation: qrx_about_reveal 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes qrx_about_reveal {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ── Когнитивное ядро ────────────────────────────────────────────────── */
+
+.qrx_about_core {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.qrx_about_core_head {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+/* Пульсирующее ядро в двух кольцах */
+.qrx_about_core_mark {
+    position: relative;
+    flex: none;
+    width: 51.2px;
+    height: 51.2px;
+}
+
+.qrx_about_core_ring,
+.qrx_about_core_ring_in {
+    position: absolute;
+    border-radius: 100px;
+    border: 1px solid rgb(var(--gold-rgb) / 0.5);
+    animation: qrx_about_core_spin 3s linear infinite;
+}
+
+.qrx_about_core_ring {
+    inset: 0;
+}
+
+.qrx_about_core_ring_in {
+    inset: 9px;
+    border-color: rgb(var(--gold-rgb) / 0.28);
+    animation-direction: reverse;
+}
+
+.qrx_about_core_dot {
+    position: absolute;
+    inset: 19px;
+    background-color: rgb(var(--gold-rgb));
+    border-radius: 100px;
+    animation: qrx_about_core_pulse 2.2s ease-in-out infinite;
+}
+
+.qrx_about_core_state {
+    font: 12.8px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-gold);
+}
+
+@keyframes qrx_about_core_spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes qrx_about_core_pulse {
+    0%,
+    100% {
+        opacity: 0.7;
+        transform: scale(0.82);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .qrx_about_secret,
+    .qrx_about_core_ring,
+    .qrx_about_core_ring_in,
+    .qrx_about_core_dot {
+        animation: none;
+    }
+}
+
+/* ── Автор ───────────────────────────────────────────────────────────── */
+
+.qrx_about_author {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.qrx_about_author_head {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+.qrx_about_avatar {
+    flex: none;
+    width: 76.8px;
+    height: 76.8px;
+    background-image: url($lib/App/img/avatar/Avatar_good_fox.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    border-radius: 100px;
+}
+
+/*
+ * Биография — единственная проза в приложении: строчными, Regular, с
+ * межстрочным интервалом. Раньше и она шла заглавными, как подписи кнопок.
+ */
+.qrx_about_bio {
+    font: 12.8px Rubik-Regular;
+    line-height: 1.55;
+    color: var(--color-text);
+    opacity: 0.7;
+}
+
+.qrx_about_more {
+    align-self: flex-start;
+    font: 12.8px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    cursor: pointer;
+    transition: opacity 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_about_more:hover {
+    opacity: 0.7;
+}
+
+/* ── Ссылки ──────────────────────────────────────────────────────────── */
+
+.qrx_about_links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 14px;
+    width: 85%;
+}
+
+/*
+ * Строка-ссылка. Заливка при наведении — чистое золото с тёмным текстом, как у
+ * карточек стартовой. Прежде здесь было золото в половину силы: на почти чёрном
+ * фоне оно мутнеет в горчичный.
+ */
+.qrx_about_link {
+    box-sizing: border-box;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 20px;
+    text-align: left;
+    background: var(--color-card);
+    border: 2px solid var(--color-gold);
+    border-radius: 25px;
+    backdrop-filter: blur(12.5px);
+    cursor: pointer;
+    transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_about_link:hover {
+    background-color: rgb(var(--gold-rgb));
+}
+
+/*
+ * Значок сидит в мягкой подложке — той же, что под знаком приложения в шапке.
+ * Без неё три линейных значка висели в строке сами по себе и не держали ряд.
+ */
+.qrx_about_link_tile {
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    justify-content: center;
+    align-items: center;
+    width: 44.8px;
+    height: 44.8px;
+    background-color: rgb(var(--gold-rgb) / 0.08);
+    border-radius: 15px;
+    transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_about_link_ico {
+    flex: none;
+    width: 25.6px;
+    height: 25.6px;
+}
+
+/* На золотой заливке подложка становится тёмной, значок — тоже */
+.qrx_about_link:hover .qrx_about_link_tile {
+    background-color: rgb(14 15 18 / 0.14);
+}
+
+.qrx_about_link_text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.qrx_about_link_title {
+    font: 14.08px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-text);
+}
+
+.qrx_about_link_note {
+    font: 10.24px Rubik-Medium;
+    text-transform: uppercase;
+    color: var(--color-text);
+    opacity: 0.5;
+}
+
+/* Стрелка проявляется только под курсором */
+.qrx_about_link_go {
+    margin-left: auto;
+    font: 15.36px Rubik-Regular;
+    color: var(--color-text);
+    opacity: 0;
+    transition: opacity 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_about_link:hover .qrx_about_link_ico {
+    --color-icon: rgb(14, 15, 18);
+}
+
+.qrx_about_link:hover .qrx_about_link_title,
+.qrx_about_link:hover .qrx_about_link_note,
+.qrx_about_link:hover .qrx_about_link_go {
+    color: rgb(14, 15, 18);
+    opacity: 1;
+}
+
+/* ── Подвал ──────────────────────────────────────────────────────────── */
+
+.qrx_about_foot {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 85%;
+    padding-bottom: 4px;
+    font: 10.24px Rubik-Medium;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--color-text);
+    opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .qrx_about_secret,
+    .qrx_about_link,
+    .qrx_about_link_go,
+    .qrx_about_button {
+        transition: none;
+    }
+}
+
+/* App Console */
+
+.app_console {
+    width: 100%;
+    height: 96%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.app_console_top {
+    width: 100%;
+    aspect-ratio: 20 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app_console_top_panel {
+    width: 95%;
+    aspect-ratio: 25 / 1;
+    border: 2px solid var(--color-gold);
+    border-radius: 0.8em;
+    margin: 14.6px 0 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app_console_top_panel_tab {
+    width: 99%;
+    height: 36.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app_console_tab {
+    width: 95%;
+    height: 73px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    overflow-x: hidden;
+}
+
+.app_console_tab::-webkit-scrollbar {
+    display: flex;
+}
+
+.app_console_tab::-webkit-scrollbar-thumb {
+    display: flex;
+    background: #888;
+    border-radius: 4px;
+}
+
+.app_console_tab_cmd {
+    width: 256px;
+    height: 36.5px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background-color: rgb(var(--gold-rgb));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 36.5px 0 0;
+}
+
+.app_console_tab_add {
+    width: 76.8px;
+    aspect-ratio: 10 / 4;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background-color: rgb(var(--gold-rgb));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 0 7.3px;
+    cursor: pointer;
+}
+
+.app_console_down {
+    width: 100%;
+    aspect-ratio: 16 / 8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app_console_down_panel {
+    width: 95%;
+    aspect-ratio: 16 / 7.5;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.app_console_down_panel::-webkit-scrollbar {
+    display: flex;
+}
+
+.app_console_panel {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

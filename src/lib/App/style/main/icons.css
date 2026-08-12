@@ -1,0 +1,696 @@
+/*
+ * Иконки интерфейса.
+ *
+ * Форма берётся из SVG маской, цвет задаётся стилем. Поэтому иконке не нужен
+ * отдельный файл под каждую тему: раньше рядом с каждой лежала чёрная копия,
+ * и тема переключалась подменой `background-image`.
+ *
+ * Многоцветные иконки маской покрасить нельзя — они остались картинками
+ * (см. `themes/icons-theme.css` для тех, что различаются по темам).
+ */
+
+.Creating_setting_interaction_sound_ico_high {
+	mask-image: url($lib/App/img/icons/Creating_interaction/volume-high.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.Creating_setting_interaction_sound_ico_cross {
+	mask-image: url($lib/App/img/icons/Creating_interaction/volume-cross.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.titlebar_right_dops_settings_img {
+	mask-image: url($lib/App/img/titlebar/app_settings_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.titlebar_right_button_minimize_img {
+	mask-image: url($lib/App/img/titlebar/hidden_window.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.titlebar_right_button_maximize_img_min {
+	mask-image: url($lib/App/img/titlebar/minimize_window.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.titlebar_right_button_maximize_img {
+	mask-image: url($lib/App/img/titlebar/maximize_window.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.titlebar_right_button_close_img {
+	mask-image: url($lib/App/img/titlebar/close_window.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.titlebar_right_dops_console_ico {
+	mask-image: url($lib/App/img/titlebar/app_console.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.titlebar_right_dops_notification_ico {
+	mask-image: url($lib/App/img/titlebar/app_notification.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.titlebar_right_dops_notification_ico_bing {
+	mask-image: url($lib/App/img/titlebar/app_notification-bing.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+/*
+ * Значки панели трея.
+ *
+ * Восстановлены после того, как их снесла правка соседнего блока: убирали
+ * мёртвые правила срезом по тексту, и срез захватил живые. Источники подняты
+ * из собранной сборки — по кривым самих картинок, а не по памяти.
+ */
+.titlebar_tray_right_button_close_img {
+	mask-image: url($lib/App/img/titlebar/close_window.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.tray_app_bottom_link_back_ico_1 {
+	mask-image: url($lib/App/img/icons/Home/icon/home_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.tray_app_bottom_link_back_ico_6 {
+	mask-image: url($lib/App/img/tray/tray_trash.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.tray_app_trash_panel_selection_button_ico_1 {
+	mask-image: url($lib/App/img/tray/tray_trash.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.tray_app_trash_panel_selection_button_ico_2 {
+	mask-image: url($lib/App/img/tray/tray_trush_square.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_left_link_back_ico_1 {
+	mask-image: url($lib/App/img/icons/Home/icon/home_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_left_link_back_ico_2 {
+	mask-image: url($lib/App/img/icons/Home/icon/app_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_left_link_back_ico_3 {
+	mask-image: url($lib/App/img/icons/Home/icon/automation_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_left_link_back_ico_4 {
+	mask-image: url($lib/App/img/icons/Home/icon/system_info_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_left_link_back_ico_5 {
+	mask-image: url($lib/App/img/icons/Home/icon/cleaning_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_left_link_back_ico_6 {
+	mask-image: url($lib/App/img/icons/Home/icon/registry_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_left_link_back_ico_7 {
+	mask-image: url($lib/App/img/icons/Home/icon/virus_shield_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_left_link_back_ico_8 {
+	mask-image: url($lib/App/img/icons/Home/icon/disk_stats_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_left_link_back_ico_9 {
+	mask-image: url($lib/App/img/icons/Home/icon/rgb_control_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_app_right_panel_button_ico_1 {
+	mask-image: url($lib/App/img/icons/Home/app_config_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_app_right_panel_button_ico_2 {
+	mask-image: url($lib/App/img/icons/Home/app_games_config_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_app_right_panel_button_ico_3 {
+	mask-image: url($lib/App/img/icons/Home/app_game_launcher__config_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_app_right_panel_button_ico_4 {
+	mask-image: url($lib/App/img/icons/Home/app_dev_config_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_app_right_panel_button_ico_5 {
+	mask-image: url($lib/App/img/icons/Home/app_ai_config_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_app_right_panel_button_ico_6 {
+	mask-image: url($lib/App/img/icons/Home/app_document_download.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.user_home_app_center_panel_search_panel_get_ico {
+	mask-image: url($lib/App/img/icons/Home/Search_App.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon-muted);
+}/* Фон этого элемента — подсветка при наведении, поэтому маска
+   вынесена на псевдоэлемент: иначе фон обрезался бы по форме иконки. */
+.HomeAppPanelStartInfoMotionTabButtonCloseIco {
+	position: relative;
+}
+
+.HomeAppPanelStartInfoMotionTabButtonCloseIco::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	mask-image: url($lib/App/img/titlebar/close_window.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+/* Фон этого элемента — подсветка при наведении, поэтому маска
+   вынесена на псевдоэлемент: иначе фон обрезался бы по форме иконки. */
+.HomeAppPanelStartInfoMotionTabButtonBackIco {
+	position: relative;
+}
+
+.HomeAppPanelStartInfoMotionTabButtonBackIco::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	mask-image: url($lib/App/img/icons/Home/icon/app_back.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.AppStatsInfoPanelAICO {
+	mask-image: url($lib/App/img/icons/Home/icon/app_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}/* Фон этого элемента — подсветка при наведении, поэтому маска
+   вынесена на псевдоэлемент: иначе фон обрезался бы по форме иконки. */
+.AppStatsInfoStatsPanelInformationDownloadPlus {
+	position: relative;
+}
+
+.AppStatsInfoStatsPanelInformationDownloadPlus::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	mask-image: url($lib/App/img/icons/Home/download_plus_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+/* Фон этого элемента — подсветка при наведении, поэтому маска
+   вынесена на псевдоэлемент: иначе фон обрезался бы по форме иконки. */
+.AppStatsInfoStatsPanelInformationEditor {
+	position: relative;
+}
+
+.AppStatsInfoStatsPanelInformationEditor::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	mask-image: url($lib/App/img/icons/Home/editor_app_panel.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+/* Фон этого элемента — подсветка при наведении, поэтому маска
+   вынесена на псевдоэлемент: иначе фон обрезался бы по форме иконки. */
+.AppStatsInfoStatsPanelInformationRemove {
+	position: relative;
+}
+
+.AppStatsInfoStatsPanelInformationRemove::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	mask-image: url($lib/App/img/icons/Home/remove_app.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.AppStatsEditorPanel1ElementICO1 {
+	mask-image: url($lib/App/img/icons/Home/flash_circle.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.AppStatsEditorPanel1ElementICO2 {
+	mask-image: url($lib/App/img/icons/Home/global_site.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.AppStatsEditorPanel1ElementICO3 {
+	mask-image: url($lib/App/img/icons/Home/more_square.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}/* Фон этого элемента — подсветка при наведении, поэтому маска
+   вынесена на псевдоэлемент: иначе фон обрезался бы по форме иконки. */
+.AppStatsEditorPanel2PanelUseGetICO1 {
+	position: relative;
+}
+
+.AppStatsEditorPanel2PanelUseGetICO1::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	mask-image: url($lib/App/img/icons/Arrow_left.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+/* Фон этого элемента — подсветка при наведении, поэтому маска
+   вынесена на псевдоэлемент: иначе фон обрезался бы по форме иконки. */
+.AppStatsEditorPanel2PanelUseGetICO2 {
+	position: relative;
+}
+
+.AppStatsEditorPanel2PanelUseGetICO2::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	mask-image: url($lib/App/img/icons/Arrow_right.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.AppStatsNewPanelHomeStartICO {
+	mask-image: url($lib/App/img/icons/Home/app_config_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.HomeAppPanelStartIco {
+	mask-image: url($lib/App/img/icons/Home/icon/app_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.HomeAppPanelStartSiteIco {
+	mask-image: url($lib/App/img/icons/Home/global_site.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.HomeAppPanelStartInstallPanelDownloadPlusIco {
+	mask-image: url($lib/App/img/icons/Home/download_plus_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.HomeAppPanelStartInstallPanelDownloadIco {
+	mask-image: url($lib/App/img/icons/Home/app_info_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.AppStatsNewPanelCYEPanelAppICO {
+	mask-image: url($lib/App/img/icons/Home/icon/app_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.app_settings_home_left_link_back_ico_1 {
+	mask-image: url($lib/App/img/icons/Home/icon/home_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.app_settings_home_left_link_back_ico_2 {
+	mask-image: url($lib/App/img/icons/Home/icon/settings_window_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+.app_settings_home_left_link_back_ico_3 {
+	mask-image: url($lib/App/img/icons/Home/icon/settings_information_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: right center;
+	mask-size: cover;
+	background-color: var(--color-icon);
+}
+
+/* Система: быстрый доступ и питание. Масками — чтобы брали цвет кнопки */
+
+.qrx_sys_ico_settings {
+	mask-image: url($lib/App/img/icons/Settings/Windows_settings.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+.qrx_sys_ico_sleep {
+	mask-image: url($lib/App/img/icons/Settings/Windows_hibernation.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+.qrx_sys_ico_power {
+	mask-image: url($lib/App/img/icons/Settings/Windows_poweroff.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+.qrx_sys_ico_restart {
+	mask-image: url($lib/App/img/icons/Settings/Windows_reboot.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+.qrx_sys_ico_lock {
+	mask-image: url($lib/App/img/icons/Settings/Windows_user_switching.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+/* Проводник — в наборе значка не было, берём папку из предпросмотра рамки */
+
+.qrx_sys_ico_explorer {
+	mask-image: url($lib/App/img/icons/Settings/Folder_files_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+/* Переключатель темы */
+
+.qrx_theme_ico_light {
+	mask-image: url($lib/App/img/icons/Settings/theme_light.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+.qrx_theme_ico_dark {
+	mask-image: url($lib/App/img/icons/Settings/theme_dark.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+.qrx_theme_ico_system {
+	mask-image: url($lib/App/img/icons/Settings/theme_system.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+/*
+ * Ссылки в разделе «О программе».
+ *
+ * Нарисованы для этого раздела: сетка 24×24, обводка 1.5, скруглённые концы,
+ * ничего не залито. Раньше здесь стояли значки, взятые из разных мест набора, —
+ * глобус и вопрос в круге на сетке 24×24 и квадратный значок на сетке 40×40,
+ * который рядом с ними читался пустой рамкой.
+ */
+
+/* Раскрытая книга — знакомство с продуктом */
+.qrx_about_link_ico_1 {
+	mask-image: url($lib/App/img/icons/Settings/about_help.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+/*
+ * Лупа — база знаний, поиск решений.
+ *
+ * Сначала здесь было облачко реплики с вопросительным знаком внутри, и знак
+ * лез за края: на сетке 24×24 при обводке 1.5 крючок занимал 78% внутренней
+ * высоты пузыря, а если его уменьшить — петля закрывается в пятно. Мелкой
+ * внутренней детали такой размер не держит, поэтому глиф без неё.
+ */
+.qrx_about_link_ico_2 {
+	mask-image: url($lib/App/img/icons/Settings/about_knowledge.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+/* Жук — баг-трекер */
+.qrx_about_link_ico_3 {
+	mask-image: url($lib/App/img/icons/Settings/about_bug.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+/* Цветные значки разделов: одинаковы в обеих темах */
+
+.user_home_app_right_panel_button_ico_1:hover, .user_home_app_right_panel_button_ico_1_color {
+	background-image: url($lib/App/img/icons/Home/color/app_config_ico_color.svg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+.user_home_app_right_panel_button_ico_2:hover, .user_home_app_right_panel_button_ico_2_color {
+	background-image: url($lib/App/img/icons/Home/color/app_games_config_ico_color.svg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+.user_home_app_right_panel_button_ico_3:hover, .user_home_app_right_panel_button_ico_3_color {
+	background-image: url($lib/App/img/icons/Home/color/app_game_launcher__config_ico_color.svg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+.user_home_app_right_panel_button_ico_4:hover, .user_home_app_right_panel_button_ico_4_color {
+	background-image: url($lib/App/img/icons/Home/color/app_dev_config_ico_color.svg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+.user_home_app_right_panel_button_ico_5:hover, .user_home_app_right_panel_button_ico_5_color {
+	background-image: url($lib/App/img/icons/Home/color/app_ai_config_ico_color.svg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+.user_home_app_right_panel_button_ico_6:hover, .user_home_app_right_panel_button_ico_6_color {
+	background-image: url($lib/App/img/icons/Home/color/app_document_download_color.svg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+/* Выход из программы в нижнем ряду панели трея */
+.tray_app_bottom_link_back_ico_quit {
+	width: 23.4px;
+	height: 23.4px;
+	mask-image: url($lib/App/img/icons/Settings/Windows_poweroff.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+/* Разделы нижнего ряда панели трея: система и настройки программы */
+.tray_app_bottom_link_back_ico_sys {
+	width: 23.4px;
+	height: 23.4px;
+	mask-image: url($lib/App/img/icons/Home/icon/system_info_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+.tray_app_bottom_link_back_ico_cog {
+	width: 23.4px;
+	height: 23.4px;
+	mask-image: url($lib/App/img/icons/Settings/Windows_settings.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}
+
+/* Пустая главная панели: знак вместо строчки «пусто» */
+.tray_empty_glyph {
+	width: 46px;
+	height: 46px;
+	mask-image: url($lib/App/img/icons/Home/icon/app_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: rgb(var(--gold-rgb) / 0.5);
+}
+
+/* Запуск программы. Форма своя: в наборе значков её не было, а «открыть
+   папку» и «открыть программу» надо различать с одного взгляда */
+.qrx_sys_ico_play {
+	mask-image: url($lib/App/img/icons/Home/icon/play_ico.svg);
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+	background-color: var(--color-icon);
+}

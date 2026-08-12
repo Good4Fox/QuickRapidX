@@ -1,0 +1,43 @@
+/*
+ * Сброс браузерного оформления интерактивных элементов.
+ *
+ * В исходном приложении кликабельными были <div on:click>, и весь CSS написан
+ * под них. Здесь те же места — настоящие <button>: их видно с клавиатуры и
+ * читают скринридеры. Но у кнопки свои стили по умолчанию — фон, рамка,
+ * собственный шрифт и выравнивание по центру, — и они перекрывают вёрстку.
+ *
+ * Этот файл подключается ПЕРВЫМ, до остальных: правила ниже держатся на
+ * селекторе по элементу, поэтому любой класс из оформления их перебивает.
+ */
+
+button {
+	/* Геометрия — как у div: класс сам задаст display/размеры */
+	display: block;
+	width: auto;
+	padding: 0;
+	margin: 0;
+
+	/* Кнопка не наследует шрифт и цвет — возвращаем наследование */
+	font: inherit;
+	line-height: inherit;
+	color: inherit;
+	letter-spacing: inherit;
+	text-align: inherit;
+	text-transform: inherit;
+
+	background: none;
+	border: 0;
+	border-radius: 0;
+	appearance: none;
+	cursor: pointer;
+}
+
+/* Отключённое действие не должно выглядеть как активное */
+button:disabled {
+	cursor: default;
+}
+
+button:focus-visible {
+	outline: 2px solid var(--color-gold);
+	outline-offset: 2px;
+}

@@ -1,0 +1,50 @@
+# Сборка релиза.
+#
+# Идёт по метке вида `v0.5.0` и по ручному запуску. Складывает установщики в
+# черновик релиза — опубликовать его остаётся вручную, чтобы можно было
+# дописать описание и проверить, что собралось то самое.
+
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Windows
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: QuickRapidX ${{ github.ref_name }}
+          releaseBody: |
+            Установщики ниже. Что изменилось — в [журнале изменений](https://github.com/Good4Fox/QuickRapidX/blob/main/.github/CHANGELOG.md).
+          # Черновиком: описание дописывается руками, и стоит убедиться, что
+          # собралось именно то, что помечали
+          releaseDraft: true
+          prerelease: false

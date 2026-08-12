@@ -1,0 +1,23 @@
+@media (max-width: 768px) {
+	body {
+		font-size: 0.9em;
+	}
+	
+	p {
+		margin: 0.5em 0;
+	}
+	
+	option {
+		font: 1.5vw 'Rubik', sans-serif;
+	}
+}
+
+@media (max-width: 480px) {
+	body {
+		font-size: 0.8em;
+	}
+	
+	input, textarea, select {
+		font-size: 0.9em;
+	}
+}

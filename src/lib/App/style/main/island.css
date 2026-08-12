@@ -1,0 +1,106 @@
+/*
+ * «Капля» по центру полосы заголовка.
+ *
+ * В покое — узкая полоска, признак того, что за это место тащат окно.
+ * Когда есть что показать, раскрывается в плашку и сворачивается обратно.
+ *
+ * Раскрытие анимируется через max-width, а не width: содержимое бывает разной
+ * длины, и фиксировать её пришлось бы вручную под каждое сообщение.
+ */
+
+.qrx_island {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 64px;
+	height: 24px;
+	padding: 0;
+	overflow: hidden;
+
+	background-color: transparent;
+	border-radius: 100px;
+
+	transition:
+		max-width 320ms cubic-bezier(0.16, 1, 0.3, 1),
+		padding 320ms cubic-bezier(0.16, 1, 0.3, 1),
+		background-color 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_island_open {
+	max-width: 340px;
+	padding: 0 12px;
+	background-color: var(--color-panel-strong);
+	box-shadow: 0 4px 14px rgb(0 0 0 / 0.28);
+}
+
+/* Покой: полоска, за которую тащат окно */
+.qrx_island_idle {
+	width: 64px;
+	height: 3px;
+	background-color: var(--color-motion);
+	border-radius: 100px;
+	transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.titlebar:hover .qrx_island_idle {
+	background-color: rgb(var(--gold-rgb) / 0.5);
+}
+
+.qrx_island_body {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	white-space: nowrap;
+}
+
+.qrx_island_icon {
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 14px;
+	height: 14px;
+	color: var(--note-color);
+}
+
+.qrx_island_title {
+	font: 11px Rubik-Medium;
+	line-height: 1;
+	color: var(--color-text);
+	/* Длинный заголовок обрезаем: капля не должна распирать полосу */
+	max-width: 240px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.qrx_island_percent {
+	font: 10px Rubik-Medium;
+	font-variant-numeric: tabular-nums;
+	color: var(--color-gold);
+}
+
+/* Кольцо загрузки — вращение считается на композиторе */
+.qrx_island_spinner {
+	width: 12px;
+	height: 12px;
+	border: 2px solid rgb(var(--gold-rgb) / 0.25);
+	border-top-color: var(--color-gold);
+	border-radius: 50%;
+	animation: qrx_island_spin 700ms linear infinite;
+}
+
+@keyframes qrx_island_spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_island {
+		transition: none;
+	}
+
+	.qrx_island_spinner {
+		animation: none;
+	}
+}

@@ -1,0 +1,3352 @@
+/*
+ * Выпадающий список.
+ *
+ * Держится языка настроек: рамка в 2px золотом, радиус 25px, матовая подложка с
+ * размытием. Системный <select> сюда не вписывался — список рисовала Windows, со
+ * своим фоном, шрифтом и прямыми углами.
+ */
+
+.qrx_select {
+	position: relative;
+	display: flex;
+	flex: none;
+}
+
+.qrx_select_head {
+	box-sizing: border-box;
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	justify-content: space-between;
+	min-width: 192px;
+	padding: 8px 16px;
+	font: 14.08px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-text);
+	background-color: var(--color-card);
+	border: 2px solid var(--color-gold);
+	border-radius: 25px;
+	cursor: pointer;
+	transition: border-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_select_head:hover {
+	background-color: var(--color-card-hover);
+}
+
+.qrx_select_value {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Уголок из двух граней квадрата — та же фигура, что у флажка */
+.qrx_select_arrow {
+	flex: none;
+	width: 7px;
+	height: 7px;
+	margin-top: -3px;
+	border: solid var(--color-gold);
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+	transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_select_open .qrx_select_arrow {
+	margin-top: 3px;
+	transform: rotate(-135deg);
+}
+
+/* ── Список ──────────────────────────────────────────────────────────── */
+
+.qrx_select_list {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	left: 0;
+	z-index: 40;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 6px;
+	background-color: var(--color-surface);
+	border: 2px solid var(--color-gold);
+	border-radius: 18px;
+	box-shadow: 0 14px 34px rgb(0 0 0 / 0.45);
+	outline: none;
+	animation: qrx_select_drop 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Снизу может не быть места — тогда список открывается вверх */
+.qrx_select_list_up {
+	top: auto;
+	bottom: calc(100% + 8px);
+	transform-origin: bottom center;
+}
+
+@keyframes qrx_select_drop {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.qrx_select_option {
+	box-sizing: border-box;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	justify-content: space-between;
+	padding: 9px 12px;
+	border-radius: 13px;
+	cursor: pointer;
+}
+
+/*
+ * Подсветка идёт за курсором — хоть за мышью, хоть за стрелками. Отдельного
+ * оформления у :hover нет намеренно: иначе при переборе с клавиатуры
+ * подсвечивались бы сразу два пункта — тот, где курсор, и тот, где мышь.
+ */
+.qrx_select_option_cursor {
+	background-color: var(--color-hover);
+}
+
+.qrx_select_option_active .qrx_select_option_label {
+	color: var(--color-gold);
+}
+
+.qrx_select_option_text {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	min-width: 0;
+}
+
+.qrx_select_option_label {
+	font: 14.08px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-text);
+}
+
+.qrx_select_option_note {
+	font: 9px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-text);
+	opacity: 0.45;
+}
+
+/* Галочка у выбранного — та же фигура, что в флажке настроек */
+.qrx_select_tick {
+	flex: none;
+	width: 6px;
+	height: 11px;
+	margin-bottom: 3px;
+	border: solid var(--color-gold);
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_select_list,
+	.qrx_select_arrow {
+		animation: none;
+		transition: none;
+	}
+}
+
+/*
+ * Переключатель темы.
+ *
+ * Раньше на этом месте стояли три кружка 76.8px с золотой обводкой: белый,
+ * тёмный и с картинкой «как в системе». Что выбрано сейчас — они не показывали
+ * никак, а подпись рядом гласила «Временно отключено», хотя переключение
+ * работает.
+ */
+
+.qrx_seg {
+	position: relative;
+	box-sizing: border-box;
+	display: flex;
+	flex: none;
+	padding: 3px;
+	background-color: var(--color-card);
+	border: 2px solid var(--color-gold);
+	border-radius: 100px;
+}
+
+/* Подложка выбранного едет к нему, а не мигает на месте */
+.qrx_seg_thumb {
+	position: absolute;
+	top: 3px;
+	bottom: 3px;
+	left: 3px;
+	width: calc((100% - 6px) / var(--seg-count, 3));
+	background-color: rgb(var(--gold-rgb));
+	border-radius: 100px;
+	transform: translateX(calc(var(--seg-index, 0) * 100%));
+	transition: transform 340ms cubic-bezier(0.34, 1.28, 0.64, 1);
+}
+
+.qrx_seg_item {
+	position: relative;
+	z-index: 1;
+	box-sizing: border-box;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 7px 16px;
+	font: 12.8px Rubik-Medium;
+	text-transform: uppercase;
+	white-space: nowrap;
+	color: var(--color-text);
+	border-radius: 100px;
+	cursor: pointer;
+	transition: color 220ms cubic-bezier(0.4, 0, 0.2, 1);
+
+	/*
+	 * Ровно по трети каждый — иначе подложка, которая считается по трети, встаёт
+	 * не на своё место. Без min-width пункт с длинной подписью не сжимается:
+	 * у элемента гибкой раскладки min-width по умолчанию равен ширине
+	 * содержимого, и «Синхронизация с компьютером» раздвигала ряд.
+	 */
+	flex: 1 1 0;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.qrx_seg_ico {
+	flex: none;
+	width: 18px;
+	height: 18px;
+	transition: background-color 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* На золотой подложке краска тёмная — числом, а не токеном: золото одно на
+   обе темы, значит и краска поверх него одна */
+.qrx_seg_item_active {
+	color: rgb(14, 15, 18);
+}
+
+.qrx_seg_item_active .qrx_seg_ico {
+	--color-icon: rgb(14, 15, 18);
+}
+
+.qrx_seg_item:not(.qrx_seg_item_active):hover {
+	color: var(--color-gold);
+}
+
+.qrx_seg_item:not(.qrx_seg_item_active):hover .qrx_seg_ico {
+	--color-icon: var(--color-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_seg_thumb {
+		transition: none;
+	}
+}
+
+/*
+ * Открытый список должен лежать поверх соседних строк.
+ *
+ * Одного z-index мало: у строки настройки есть backdrop-filter, а он заводит
+ * собственный контекст наложения — внутри него z-index списка ни с чем не
+ * соревнуется, и следующие строки, каждая со своим таким же контекстом,
+ * рисуются поверх целиком. Поднимать надо саму строку.
+ */
+.qrx_set_row:has(.qrx_select_open),
+.qrx_about_card:has(.qrx_select_open) {
+	position: relative;
+	z-index: 5;
+}
+
+/*
+ * Выбор значка приложения.
+ *
+ * Раньше здесь стояли два кружка без обработчиков, а подпись обещала «Скоро».
+ */
+
+.qrx_icons {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+	gap: 10px;
+	width: 100%;
+}
+
+.qrx_icon {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	align-items: center;
+	padding: 12px 6px 10px;
+	border: 2px solid transparent;
+	border-radius: 18px;
+	cursor: pointer;
+	transition:
+		border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+		background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_icon:hover {
+	background-color: var(--color-hover);
+}
+
+.qrx_icon_active {
+	border-color: var(--color-gold);
+}
+
+.qrx_icon_img {
+	width: 44.8px;
+	height: 44.8px;
+	/* Значок рисуется под цвет варианта, менять его нельзя */
+	transition: transform 180ms cubic-bezier(0.34, 1.28, 0.64, 1);
+}
+
+.qrx_icon:hover .qrx_icon_img {
+	transform: scale(1.08);
+}
+
+.qrx_icon_label {
+	font: 9px Rubik-Medium;
+	text-transform: uppercase;
+	text-align: center;
+	color: var(--color-text);
+	opacity: 0.55;
+}
+
+.qrx_icon_active .qrx_icon_label {
+	color: var(--color-gold);
+	opacity: 1;
+}
+
+/* Отдельная строка под ярлыки: правка трогает файлы вне приложения */
+.qrx_icon_extra {
+	display: flex;
+	gap: 18px;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding-top: 4px;
+	cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_icon_img {
+		transition: none;
+	}
+}
+
+/*
+ * Переключатель поведения.
+ *
+ * Квадратный флажок с галочкой годится для «отметить пункт», но эти настройки
+ * не отмечают, а включают — у них есть состояние, и пилюля показывает его
+ * положением, а не наличием галочки.
+ *
+ * Имя не `qrx_switch`: так называется контейнер перехода между разделами в
+ * view-switch.css. Этот файл подключается позже и перебил бы его — область
+ * содержимого схлопнулась бы в пилюлю 44×26 с обрезкой по краям, и всё
+ * внутри пропало бы с экрана, оставшись в дереве.
+ */
+
+.qrx_toggle {
+	position: relative;
+	box-sizing: border-box;
+	flex: none;
+	width: 44px;
+	height: 25.6px;
+	padding: 0;
+	background-color: rgb(var(--gold-rgb) / 0.12);
+	border: 2px solid rgb(var(--gold-rgb) / 0.45);
+	border-radius: 100px;
+	cursor: pointer;
+	transition:
+		background-color 220ms cubic-bezier(0.4, 0, 0.2, 1),
+		border-color 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_toggle:checked {
+	background-color: rgb(var(--gold-rgb));
+	border-color: var(--color-gold);
+}
+
+/*
+ * Бегунок рисуется псевдоэлементом. У флажка он уже занят галочкой из общего
+ * оформления — её здесь надо погасить, иначе она проступает сквозь бегунок.
+ */
+.qrx_toggle::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 2.5px;
+	width: 16px;
+	height: 16px;
+	margin: 0;
+	border: none;
+	border-radius: 100px;
+	background-color: rgb(var(--gold-rgb));
+	transform: translateY(-50%) rotate(0deg);
+	visibility: visible;
+	transition:
+		transform 260ms cubic-bezier(0.34, 1.28, 0.64, 1),
+		background-color 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_toggle:checked::before {
+	background-color: rgb(14, 15, 18);
+	transform: translateY(-50%) translateX(19.5px) rotate(0deg);
+}
+
+.qrx_toggle:disabled {
+	cursor: default;
+	opacity: 0.5;
+}
+
+/*
+ * Вложенная строка: настройка имеет смысл только вместе с той, что над ней.
+ * Уступ и черта слева показывают эту связь, не требуя отдельной подписи.
+ */
+.qrx_set_row_child {
+	position: relative;
+	width: calc(85% - 26px);
+	margin-left: 26px;
+}
+
+.qrx_set_row_child::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: -18px;
+	width: 12px;
+	height: 2px;
+	background-color: rgb(var(--gold-rgb) / 0.35);
+	border-radius: 100px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_toggle,
+	.qrx_toggle::before {
+		transition: none;
+	}
+}
+
+/* ── Система: быстрый доступ и питание ───────────────────────────────── */
+
+.qrx_sys_quick {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	width: 100%;
+}
+
+/* Безобидные действия — обычные кнопки, защищать нечего */
+.qrx_sys_link {
+	box-sizing: border-box;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	padding: 10px 18px;
+	font: 12.8px Rubik-Medium;
+	text-transform: uppercase;
+	white-space: nowrap;
+	color: var(--color-text);
+	border: 2px solid var(--color-gold);
+	border-radius: 100px;
+	cursor: pointer;
+	transition:
+		background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+		color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_sys_link:hover {
+	background-color: rgb(var(--gold-rgb));
+	color: rgb(14, 15, 18);
+}
+
+.qrx_sys_link_ico {
+	flex: none;
+	width: 20px;
+	height: 20px;
+}
+
+.qrx_sys_link:hover .qrx_sys_link_ico {
+	--color-icon: rgb(14, 15, 18);
+}
+
+.qrx_sys_power {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+	gap: 12px;
+	width: 100%;
+}
+
+/*
+ * Кнопка с удержанием.
+ *
+ * Полоса внизу набирается, пока кнопка нажата, и мгновенно спадает, если
+ * отпустить раньше срока. Ширина считается напрямую из доли удержания —
+ * перехода у неё нет намеренно: он бы врал о том, сколько уже набрано.
+ */
+.qrx_hold {
+	position: relative;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	align-items: center;
+	padding: 16px 10px 14px;
+	overflow: hidden;
+	background-color: var(--color-card);
+	border: 2px solid rgb(var(--gold-rgb) / 0.45);
+	border-radius: 18px;
+	cursor: pointer;
+	transition:
+		border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+		background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_hold:hover {
+	border-color: var(--color-gold);
+}
+
+.qrx_hold_armed {
+	border-color: var(--color-gold);
+	background-color: rgb(var(--gold-rgb) / 0.1);
+}
+
+.qrx_hold_ico {
+	width: 28px;
+	height: 28px;
+	transition: transform 180ms cubic-bezier(0.34, 1.28, 0.64, 1);
+}
+
+.qrx_hold_armed .qrx_hold_ico {
+	transform: scale(0.9);
+}
+
+.qrx_hold_label {
+	font: 12.8px Rubik-Medium;
+	text-transform: uppercase;
+	text-align: center;
+	color: var(--color-text);
+}
+
+/* Подсказка проступает только под курсором: подписывать каждую кнопку
+   словом «удерживайте» значило бы повторить его четыре раза подряд */
+.qrx_hold_hint {
+	font: 9px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-gold);
+	opacity: 0;
+	transition: opacity 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_hold:hover .qrx_hold_hint,
+.qrx_hold_armed .qrx_hold_hint {
+	opacity: 0.75;
+}
+
+.qrx_hold_bar {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 3px;
+	width: calc(var(--hold, 0) * 100%);
+	background-color: rgb(var(--gold-rgb));
+	border-radius: 0 100px 100px 0;
+}
+
+/* Сработало — кнопка коротко подтверждает нажатие: само действие может
+   увести систему в сон, и обратной связи иначе не будет вовсе */
+.qrx_hold_done {
+	border-color: var(--color-success);
+	background-color: rgb(0 190 116 / 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_hold,
+	.qrx_hold_ico,
+	.qrx_hold_hint {
+		transition: none;
+	}
+}
+
+/* ── Восстановление Windows ──────────────────────────────────────────── */
+
+/* Порядок запуска — не украшение, а условие: об этом стоит сказать до списка */
+.qrx_rec_order {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 12px 16px;
+	font: 12.8px Rubik-Regular;
+	line-height: 1.5;
+	color: var(--color-text);
+	opacity: 0.75;
+	background-color: rgb(var(--gold-rgb) / 0.08);
+	border-left: 3px solid var(--color-gold);
+	border-radius: 0 12px 12px 0;
+}
+
+.qrx_rec_list {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	width: 100%;
+}
+
+.qrx_rec_task {
+	box-sizing: border-box;
+	display: flex;
+	gap: 18px;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 14px;
+	border-radius: 14px;
+	transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_rec_task:hover {
+	background-color: rgb(var(--gold-rgb) / 0.06);
+}
+
+.qrx_rec_task_running {
+	background-color: rgb(var(--gold-rgb) / 0.1);
+}
+
+.qrx_rec_task_text {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+}
+
+.qrx_rec_task_label {
+	font: 14.08px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-text);
+}
+
+.qrx_rec_task_note {
+	font: 9px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-text);
+	opacity: 0.45;
+}
+
+.qrx_rec_actions {
+	display: flex;
+	flex: none;
+	gap: 8px;
+	align-items: center;
+}
+
+.qrx_rec_log {
+	padding: 10px 16px;
+	font: 9px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-gold);
+	border: 2px solid rgb(var(--gold-rgb) / 0.35);
+	border-radius: 100px;
+	cursor: pointer;
+	transition: border-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_rec_log:hover {
+	border-color: var(--color-gold);
+}
+
+.qrx_sys_link:disabled {
+	cursor: default;
+	opacity: 0.4;
+}
+
+.qrx_sys_link:disabled:hover {
+	background-color: transparent;
+	color: var(--color-text);
+}
+
+/* ── Ход задачи ──────────────────────────────────────────────────────── */
+
+.qrx_rec_state {
+	display: flex;
+	flex: none;
+	gap: 12px;
+	align-items: center;
+	width: 190px;
+}
+
+.qrx_rec_percent {
+	flex: none;
+	min-width: 46px;
+	font: 14.08px Rubik-Medium;
+	text-align: right;
+	color: var(--color-gold);
+	/* Цифры разной ширины дёргали бы полосу вбок на каждом обновлении */
+	font-variant-numeric: tabular-nums;
+}
+
+.qrx_rec_bar {
+	position: relative;
+	flex: 1;
+	height: 5px;
+	overflow: hidden;
+	background-color: rgb(var(--gold-rgb) / 0.15);
+	border-radius: 100px;
+}
+
+.qrx_rec_bar_fill {
+	height: 100%;
+	background-color: rgb(var(--gold-rgb));
+	border-radius: 100px;
+	transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/*
+ * Пока утилита не напечатала ни одной доли, показывать нечего — но задача
+ * идёт. Бегущий блик говорит «работает», не изображая точного хода.
+ */
+.qrx_rec_bar_idle::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 40%;
+	background-color: rgb(var(--gold-rgb));
+	border-radius: 100px;
+	animation: qrx_rec_sweep 1.6s ease-in-out infinite;
+}
+
+@keyframes qrx_rec_sweep {
+	0% {
+		left: -40%;
+	}
+	100% {
+		left: 100%;
+	}
+}
+
+/* ── Прошлая установка ───────────────────────────────────────────────── */
+
+.qrx_rec_old {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.qrx_rec_old_info {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	min-width: 0;
+}
+
+.qrx_rec_old_size {
+	font: 25.6px Rubik-Medium;
+	color: var(--color-gold);
+	font-variant-numeric: tabular-nums;
+}
+
+/* Удаление необратимо — предупреждение красное, а не приглушённое */
+.qrx_rec_warn {
+	font: 9px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_rec_bar_idle::after,
+	.qrx_rec_task {
+		animation: none;
+		transition: none;
+	}
+}
+
+/* ── Цвет рамки выделения ────────────────────────────────────────────── */
+
+.qrx_sel {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 26px;
+	align-items: flex-start;
+	width: 100%;
+}
+
+.qrx_sel_controls {
+	display: flex;
+	flex: 1;
+	min-width: 260px;
+	flex-direction: column;
+	gap: 18px;
+}
+
+.qrx_sel_inputs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+}
+
+.qrx_sel_input {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	cursor: pointer;
+}
+
+.qrx_sel_input_label {
+	font: 12.8px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-text);
+	opacity: 0.6;
+}
+
+
+
+
+.qrx_sel_group {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.qrx_sel_swatches {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+/* Образец показывает обе краски разом: заливку — собой, обводку — рамкой */
+.qrx_sel_swatch {
+	box-sizing: border-box;
+	width: 34px;
+	height: 34px;
+	border: 2px solid transparent;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: transform 180ms cubic-bezier(0.34, 1.28, 0.64, 1);
+}
+
+.qrx_sel_swatch:hover {
+	transform: scale(1.12);
+}
+
+.qrx_sel_saved {
+	position: relative;
+	display: flex;
+}
+
+.qrx_sel_drop {
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 16px;
+	height: 16px;
+	font: 12px Rubik-Medium;
+	line-height: 1;
+	color: var(--color-bg);
+	background-color: var(--color-danger);
+	border-radius: 100px;
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_sel_saved:hover .qrx_sel_drop {
+	opacity: 1;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_sel_swatch,
+	.qrx_sel_drop {
+		transition: none;
+	}
+}
+
+/* ── Свой выбор цвета ────────────────────────────────────────────────── */
+
+.qrx_pick {
+	position: relative;
+	display: flex;
+	flex: none;
+}
+
+/* Кнопка — сам образец: подписывать её незачем, цвет говорит за себя */
+.qrx_pick_head {
+	box-sizing: border-box;
+	width: 46px;
+	height: 30px;
+	border: 2px solid var(--color-gold);
+	border-radius: 10px;
+	cursor: pointer;
+	transition: transform 180ms cubic-bezier(0.34, 1.28, 0.64, 1);
+}
+
+.qrx_pick_head:hover {
+	transform: scale(1.06);
+}
+
+.qrx_pick_panel {
+	position: absolute;
+	top: calc(100% + 10px);
+	left: 0;
+	z-index: 40;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	width: 220px;
+	padding: 12px;
+	background-color: var(--color-surface);
+	border: 2px solid var(--color-gold);
+	border-radius: 18px;
+	box-shadow: 0 14px 34px rgb(0 0 0 / 0.45);
+	animation: qrx_select_drop 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/*
+ * Квадрат насыщенности и яркости. Два слоя поверх чистого тона: белый слева
+ * направо гасит насыщенность, чёрный снизу вверх — яркость. Так же это
+ * устроено во всех подобных выборах цвета, и считать ничего не приходится.
+ */
+.qrx_pick_area {
+	position: relative;
+	height: 128px;
+	border-radius: 12px;
+	cursor: crosshair;
+	touch-action: none;
+	background-image:
+		linear-gradient(to top, rgb(0 0 0), rgb(0 0 0 / 0)),
+		linear-gradient(to right, rgb(255 255 255), rgb(255 255 255 / 0));
+	background-color: var(--hue, rgb(255 0 0));
+}
+
+.qrx_pick_dot {
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	margin: -7px 0 0 -7px;
+	border: 2px solid rgb(255 255 255);
+	border-radius: 100px;
+	box-shadow: 0 0 0 1px rgb(0 0 0 / 0.45);
+	pointer-events: none;
+}
+
+.qrx_pick_bar {
+	position: relative;
+	height: 14px;
+	border-radius: 100px;
+	cursor: pointer;
+	touch-action: none;
+	background-image: linear-gradient(
+		to right,
+		rgb(255 0 0),
+		rgb(255 255 0),
+		rgb(0 255 0),
+		rgb(0 255 255),
+		rgb(0 0 255),
+		rgb(255 0 255),
+		rgb(255 0 0)
+	);
+}
+
+.qrx_pick_knob {
+	position: absolute;
+	top: 50%;
+	width: 12px;
+	height: 20px;
+	margin: -10px 0 0 -6px;
+	background-color: rgb(255 255 255);
+	border-radius: 4px;
+	box-shadow: 0 0 0 1px rgb(0 0 0 / 0.45);
+	pointer-events: none;
+}
+
+.qrx_pick_foot {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.qrx_pick_chip {
+	flex: none;
+	width: 30px;
+	height: 30px;
+	border: 2px solid rgb(var(--gold-rgb) / 0.45);
+	border-radius: 8px;
+}
+
+.qrx_pick_hex {
+	box-sizing: border-box;
+	width: 100%;
+	padding: 5px 10px;
+	font: 14.08px Rubik-Medium;
+	text-transform: uppercase;
+	text-align: center;
+	border-bottom: 2px solid rgb(var(--gold-rgb) / 0.4);
+}
+
+/*
+ * Открытая панель должна лежать поверх соседних строк. Одного z-index мало —
+ * у строки настройки есть backdrop-filter, а он заводит свой контекст
+ * наложения; поднимать надо саму строку. То же самое, что и у списка.
+ */
+.qrx_set_row:has(.qrx_pick_open) {
+	position: relative;
+	z-index: 6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_pick_panel,
+	.qrx_pick_head {
+		animation: none;
+		transition: none;
+	}
+}
+
+/* ── Протяжка выделения в предпросмотре ──────────────────────────────── */
+
+/*
+ * Рамка и курсор двигаются одной парой ключевых кадров с общей длительностью и
+ * задержкой. Разводить их по разным анимациям нельзя: они бы разъезжались на
+ * доли секунды, а выделение обязано тянуться ровно за кончиком курсора.
+ *
+ * Начало протяжки — левый верхний угол рамки, он же и есть точка, откуда пошло
+ * выделение. Конец — правый нижний, там и стоит курсор.
+ */
+.qrx_sel_drag {
+	animation: qrx_sel_pull 4.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.qrx_sel_pointer {
+	position: absolute;
+	top: 16px;
+	left: 16px;
+	pointer-events: none;
+	animation: qrx_sel_move 4.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/*
+ * Сдвиг на точку привязки. Картинка ставится так, чтобы «указывающая» точка
+ * легла в угол рамки: у стрелки это кончик, у руки — палец, у крестика —
+ * середина. Без сдвига курсор висел бы углом изображения на углу рамки.
+ */
+.qrx_cursor_shot {
+	display: block;
+	margin: calc(-1 * var(--hot-y, 0px)) 0 0 calc(-1 * var(--hot-x, 0px));
+	image-rendering: auto;
+}
+
+@keyframes qrx_sel_pull {
+	0%,
+	6% {
+		width: 0;
+		height: 0;
+		opacity: 1;
+	}
+	52%,
+	86% {
+		width: 160px;
+		height: 112px;
+		opacity: 1;
+	}
+	96%,
+	100% {
+		width: 160px;
+		height: 112px;
+		opacity: 0;
+	}
+}
+
+/*
+ * Подсветка ярлыка.
+ *
+ * Появляется не сразу, а к 36-му проценту хода — к этому времени рамка
+ * дорастает до ярлыка. Считается это так: ярлык начинается на 118 точках по
+ * горизонтали, рамка идёт от 16-й и растёт до 160 в промежутке с 6 % до 52 %,
+ * значит края встречаются примерно на 35 %. Цвет — тот же, каким залита рамка:
+ * в Windows выделенный значок подсвечивается им же.
+ */
+.qrx_sel_mark {
+	animation: qrx_sel_select 4.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes qrx_sel_select {
+	0%,
+	34% {
+		background-color: transparent;
+	}
+	40%,
+	92% {
+		background-color: var(--sel-tint);
+	}
+	96%,
+	100% {
+		background-color: transparent;
+	}
+}
+
+@keyframes qrx_sel_move {
+	0%,
+	6% {
+		transform: translate(0, 0);
+	}
+	52%,
+	86% {
+		transform: translate(160px, 112px);
+	}
+	96% {
+		transform: translate(160px, 112px);
+	}
+	100% {
+		transform: translate(0, 0);
+	}
+}
+
+/* Курсор виден всегда — исчезает только рамка: он же указатель, а не часть
+   выделения */
+@media (prefers-reduced-motion: reduce) {
+	.qrx_sel_drag,
+	.qrx_sel_pointer {
+		animation: none;
+	}
+
+	.qrx_sel_pointer {
+		transform: translate(160px, 112px);
+	}
+
+	.qrx_sel_mark {
+		background-color: var(--sel-tint);
+	}
+}
+
+/* ── Специальные возможности и питание ───────────────────────────────── */
+
+.qrx_tw_size {
+	display: flex;
+	flex: none;
+	flex-direction: column;
+	gap: 3px;
+	align-items: flex-end;
+}
+
+.qrx_tw_size_value {
+	font: 17.92px Rubik-Medium;
+	color: var(--color-gold);
+	opacity: 1;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Настройка подчинена той, что над ней: уступ и черта показывают связь */
+.qrx_tw_child {
+	position: relative;
+	margin-left: 26px;
+}
+
+.qrx_tw_child::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: -18px;
+	width: 12px;
+	height: 2px;
+	background-color: rgb(var(--gold-rgb) / 0.35);
+	border-radius: 100px;
+}
+
+/*
+ * Протяжка остановлена.
+ *
+ * Показывается конец: рамка растянута, курсор в её углу, ярлык подсвечен —
+ * то же состояние, что и при системной настройке «меньше движения».
+ * Бесконечный цикл хорош, чтобы понять, как это выглядит, но смотреть его
+ * постоянно незачем.
+ */
+.qrx_sel_static .qrx_sel_drag,
+.qrx_sel_static .qrx_sel_pointer,
+.qrx_sel_static .qrx_sel_mark {
+	animation: none;
+}
+
+.qrx_sel_static .qrx_sel_pointer {
+	transform: translate(160px, 112px);
+}
+
+.qrx_sel_static .qrx_sel_mark {
+	background-color: var(--sel-tint);
+}
+
+/* Кнопка поверх предпросмотра: место в нём есть, а рядом она отвлекала бы от
+   образцов цвета */
+.qrx_sel_toggle {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	z-index: 2;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 24px;
+	height: 24px;
+	background-color: rgb(0 0 0 / 0.45);
+	border-radius: 100px;
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_win_box_preview:hover .qrx_sel_toggle,
+.qrx_sel_static .qrx_sel_toggle {
+	opacity: 1;
+}
+
+.qrx_sel_toggle_mark {
+	width: 10px;
+	height: 10px;
+	background-color: rgb(var(--gold-rgb));
+}
+
+/* Пауза — две полосы, воспроизведение — треугольник */
+.qrx_sel_toggle_pause {
+	clip-path: polygon(0 0, 36% 0, 36% 100%, 0 100%, 0 0, 64% 0, 100% 0, 100% 100%, 64% 100%, 64% 0);
+}
+
+.qrx_sel_toggle_play {
+	clip-path: polygon(12% 0, 100% 50%, 12% 100%);
+}
+
+/* ── Хранилище ───────────────────────────────────────────────────────── */
+
+.qrx_lib {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16px;
+	width: 100%;
+	height: 100%;
+	padding: 24px 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.qrx_lib::-webkit-scrollbar {
+	display: block;
+	width: 6px;
+}
+
+.qrx_lib::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.qrx_lib::-webkit-scrollbar-thumb {
+	background-color: rgb(var(--gold-rgb) / 0.28);
+	border-radius: 100px;
+}
+
+.qrx_lib_head,
+.qrx_lib_list {
+	display: flex;
+	width: 85%;
+}
+
+.qrx_lib_head {
+	gap: 18px;
+	align-items: flex-start;
+	justify-content: space-between;
+}
+
+.qrx_lib_list {
+	flex-direction: column;
+	gap: 12px;
+}
+
+/* Место, чей носитель отключён: строка не пропадает — программы в ней есть,
+   просто до них сейчас не дотянуться */
+.qrx_lib_gone {
+	opacity: 0.55;
+}
+
+.qrx_lib_badge {
+	margin-left: 10px;
+	padding: 2px 9px;
+	font: 9.5px Rubik-Medium;
+	letter-spacing: 0.08em;
+	vertical-align: middle;
+	color: var(--color-gold);
+	border: 1px solid rgb(var(--gold-rgb) / 0.5);
+	border-radius: 100px;
+}
+
+.qrx_lib_figures {
+	display: flex;
+	flex: none;
+	flex-direction: column;
+	gap: 3px;
+	align-items: flex-end;
+}
+
+.qrx_lib_size {
+	font: 17.92px Rubik-Medium;
+	color: var(--color-gold);
+	font-variant-numeric: tabular-nums;
+}
+
+.qrx_lib_actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.qrx_lib_drop:hover {
+	border-color: var(--color-danger);
+	color: var(--color-danger);
+}
+
+.qrx_rec_log:disabled,
+.qrx_lib_field:disabled {
+	cursor: default;
+	opacity: 0.4;
+}
+
+.qrx_lib_form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	width: 100%;
+}
+
+.qrx_lib_field {
+	box-sizing: border-box;
+	flex: 1;
+	min-width: 200px;
+	padding: 6px 12px;
+	font: 12.8px Rubik-Medium;
+}
+
+.qrx_lib_field_short {
+	flex: 0 1 160px;
+	min-width: 120px;
+}
+
+/* ── Предложение завести Место ───────────────────────────────────────── */
+
+.qrx_offer {
+	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	padding: 24px;
+}
+
+.qrx_offer_card {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	max-width: 52ch;
+	padding: 28px 32px;
+	background: var(--color-card);
+	border: 2px solid var(--color-gold);
+	border-radius: 25px;
+	backdrop-filter: blur(12.5px);
+}
+
+.qrx_offer_title {
+	font: 17.92px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-text);
+}
+
+.qrx_offer_text {
+	margin: 0;
+	font: 13.44px Rubik-Regular;
+	line-height: 1.55;
+	color: var(--color-text);
+	opacity: 0.75;
+}
+
+/* Путь показывается до нажатия: человек должен видеть, куда именно
+   предлагается положить, а не узнавать это из открывшегося окна */
+.qrx_offer_path {
+	padding: 8px 14px;
+	font: 12.8px Rubik-Medium;
+	color: var(--color-gold);
+	background-color: rgb(var(--gold-rgb) / 0.08);
+	border-radius: 10px;
+	word-break: break-all;
+}
+
+.qrx_offer_actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	margin-top: 4px;
+}
+
+
+/* ── Выбор диска под Место ───────────────────────────────────────────── */
+
+.qrx_disks {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+	gap: 10px;
+	width: 100%;
+}
+
+.qrx_disk {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	align-items: stretch;
+	padding: 14px 16px;
+	text-align: left;
+	background: var(--color-card);
+	border: 2px solid rgb(var(--gold-rgb) / 0.35);
+	border-radius: 18px;
+	cursor: pointer;
+	transition:
+		border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+		transform 180ms cubic-bezier(0.34, 1.28, 0.64, 1);
+}
+
+.qrx_disk:hover {
+	border-color: var(--color-gold);
+	transform: translateY(-2px);
+}
+
+.qrx_disk:disabled {
+	cursor: default;
+	opacity: 0.45;
+	transform: none;
+}
+
+/* Подсказанный диск — самый свободный несистемный и несъёмный */
+.qrx_disk_suggested {
+	border-color: var(--color-gold);
+}
+
+.qrx_disk_top {
+	display: flex;
+	gap: 8px;
+	align-items: baseline;
+	justify-content: space-between;
+}
+
+.qrx_disk_letter {
+	font: 19.2px Rubik-Medium;
+	color: var(--color-text);
+	font-variant-numeric: tabular-nums;
+}
+
+.qrx_disk_tag {
+	padding: 2px 7px;
+	font: 9px Rubik-Medium;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	color: var(--color-text);
+	opacity: 0.5;
+	border: 1px solid var(--color-line);
+	border-radius: 100px;
+}
+
+.qrx_disk_label {
+	font: 9px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-text);
+	opacity: 0.45;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.qrx_disk_free {
+	font: 12.8px Rubik-Medium;
+	color: var(--color-gold);
+	font-variant-numeric: tabular-nums;
+}
+
+.qrx_disk_total {
+	font: 9px Rubik-Medium;
+	color: var(--color-text);
+	opacity: 0.4;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Полоса заполнения внутри кнопки — span, а не div: кнопка не может
+   содержать блочные элементы по правилам разметки */
+.qrx_disk .qrx_meter {
+	display: block;
+	height: 4px;
+}
+
+.qrx_disk .qrx_meter_fill {
+	display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_disk {
+		transition: none;
+	}
+}
+
+/* Выбор нового диска раскрывается прямо под строкой Места */
+.qrx_lib_move {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+	padding-top: 12px;
+	border-top: 1px solid var(--color-line);
+}
+
+/* ── Раздел «Приложения»: общая раскладка ────────────────────────────── */
+
+/*
+ * Та же схема, что в настройках: список слева, содержимое справа. Прежде
+ * здесь был выдвижной док категорий снизу и поле поиска с подписью «Скоро» —
+ * категории приходилось искать за кнопкой, а поиск не работал вовсе.
+ */
+.qrx_app {
+	box-sizing: border-box;
+	display: flex;
+	flex: 1;
+	min-width: 0;
+	height: 100%;
+	gap: 6px;
+	padding: 20px 0;
+}
+
+.qrx_app_body {
+	position: relative;
+	box-sizing: border-box;
+	display: flex;
+	flex: 1;
+	min-width: 0;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+/* Число рядом с пунктом: сколько там всего */
+.qrx_nav_count {
+	flex: none;
+	padding: 1px 7px;
+	font: 10px Rubik-Medium;
+	color: var(--color-text);
+	opacity: 0.5;
+	background-color: rgb(var(--gold-rgb) / 0.14);
+	border-radius: 100px;
+	font-variant-numeric: tabular-nums;
+}
+
+.qrx_set_nav_link_active .qrx_nav_count {
+	color: var(--color-gold);
+	opacity: 1;
+}
+
+.qrx_nav_text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* ── Каталог ─────────────────────────────────────────────────────────── */
+
+.qrx_cat,
+.qrx_found {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	width: 100%;
+	height: 100%;
+	padding: 0 0 20px 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.qrx_cat::-webkit-scrollbar,
+.qrx_found::-webkit-scrollbar {
+	display: block;
+	width: 6px;
+}
+
+.qrx_cat::-webkit-scrollbar-track,
+.qrx_found::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.qrx_cat::-webkit-scrollbar-thumb,
+.qrx_found::-webkit-scrollbar-thumb {
+	background-color: rgb(var(--gold-rgb) / 0.28);
+	border-radius: 100px;
+}
+
+.qrx_cat_head,
+.qrx_found_head,
+.qrx_found_tools {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	width: 96%;
+}
+
+.qrx_found_head {
+	align-items: flex-start;
+	justify-content: space-between;
+}
+
+.qrx_found_tools {
+	flex-wrap: wrap;
+}
+
+/* Поиск наконец работает — раньше поле было подписано «Скоро» */
+.qrx_found_search {
+	box-sizing: border-box;
+	flex: 1;
+	min-width: 180px;
+	padding: 8px 16px;
+	font: 12.8px Rubik-Medium;
+	background-color: var(--color-card);
+	border: 2px solid var(--color-gold);
+	border-bottom: 2px solid var(--color-gold);
+	border-radius: 100px;
+}
+
+.qrx_found_search:focus {
+	border-color: var(--color-gold);
+}
+
+.qrx_found_kinds {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	width: 96%;
+}
+
+.qrx_found_chip {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	padding: 7px 14px;
+	font: 11.52px Rubik-Medium;
+	text-transform: uppercase;
+	white-space: nowrap;
+	color: var(--color-text);
+	border: 2px solid rgb(var(--gold-rgb) / 0.3);
+	border-radius: 100px;
+	cursor: pointer;
+	transition:
+		border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+		color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_found_chip:hover {
+	border-color: var(--color-gold);
+}
+
+.qrx_found_chip_active {
+	color: var(--color-gold);
+	border-color: var(--color-gold);
+}
+
+/* ── Найденное на машине ─────────────────────────────────────────────── */
+
+.qrx_found_list {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	width: 96%;
+}
+
+.qrx_found_row {
+	display: grid;
+	grid-template-columns: auto 1fr auto auto auto;
+	gap: 16px;
+	align-items: center;
+	padding: 12px 14px;
+	border-radius: 12px;
+	transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_found_row:hover {
+	background-color: rgb(var(--gold-rgb) / 0.06);
+}
+
+.qrx_found_main {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	min-width: 0;
+}
+
+.qrx_found_name {
+	font: 13.44px Rubik-Medium;
+	color: var(--color-text);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.qrx_found_meta {
+	display: flex;
+	flex: none;
+	flex-direction: column;
+	gap: 2px;
+	align-items: flex-end;
+}
+
+.qrx_found_version {
+	font: 11.52px Rubik-Medium;
+	color: var(--color-gold);
+	font-variant-numeric: tabular-nums;
+}
+
+/* Вид находки цветом: откуда она взялась, видно не читая */
+.qrx_found_tag {
+	flex: none;
+	padding: 3px 10px;
+	font: 9.5px Rubik-Medium;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	border-radius: 100px;
+}
+
+.qrx_found_tag_installed {
+	color: var(--color-gold);
+	background-color: rgb(var(--gold-rgb) / 0.14);
+}
+
+.qrx_found_tag_portable {
+	color: var(--color-success);
+	background-color: rgb(0 190 116 / 0.14);
+}
+
+.qrx_found_tag_tool {
+	color: rgb(96, 186, 255);
+	background-color: rgb(96 186 255 / 0.14);
+}
+
+.qrx_found_tag_store {
+	color: rgb(178, 120, 255);
+	background-color: rgb(178 120 255 / 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_found_chip,
+	.qrx_found_row {
+		transition: none;
+	}
+}
+
+/* ── Значки программ ─────────────────────────────────────────────────── */
+
+/*
+ * Плитка одна на оба случая. Раньше настоящий значок и буква были разными
+ * объектами: у одних программ логотип во всю плитку, у других буква на пустом
+ * месте — и ряд рассыпался. Особенно в витрине, где значков нет почти ни у
+ * кого.
+ */
+/*
+ * Плитка значка программы.
+ *
+ * Имя занято только здесь и проверено поиском по проекту. `qrx_icon` носили
+ * плитки выбора значка приложения в настройках, `qrx_tile` — карточки
+ * стартовой страницы; и то и другое уже ломалось от совпадения.
+ */
+.qrx_appico {
+	box-sizing: border-box;
+	flex: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: var(--icon-size, 56px);
+	height: var(--icon-size, 56px);
+	padding: 0;
+	/*
+	 * Свой перенос движка отключён на всей плитке.
+	 *
+	 * Значок берут мышью, чтобы вытащить ярлык набора на панель задач. Движок
+	 * же видит картинку и начинает тащить её — свой перенос он заводит раньше,
+	 * чем ядро успевает завести настоящий, и наружу уезжает картинка вместо
+	 * файла. Одного `draggable=false` мало: буквы монограммы движок тоже
+	 * подхватывает как выделенный текст.
+	 */
+	-webkit-user-drag: none;
+	user-select: none;
+	background-color: rgb(var(--gold-rgb) / 0.07);
+	border: 1px solid rgb(var(--gold-rgb) / 0.14);
+	/*
+	 * Без скругления.
+	 *
+	 * Радиус считался от размера плитки и на мелких срезал углы самого значка —
+	 * у квадратных логотипов это видно сразу. Своя форма у значка уже есть, и
+	 * навязывать ему вторую незачем.
+	 */
+	border-radius: 0;
+}
+
+/* Значок с отступом, а не во всю плитку: так его вес совпадает с монограммой */
+.qrx_appico_img {
+	width: 72%;
+	height: 72%;
+	object-fit: contain;
+	/*
+	 * Отменяем общее правило для картинок.
+	 *
+	 * В main.css у `img` задано `margin: 0 3%` и `border-radius: 15px` — на
+	 * все картинки разом. Значку это давало и скругление поверх его собственной
+	 * формы, и поля по бокам, из-за которых он сидел не по центру плитки. Своей
+	 * ширины и высоты нам хватало, чтобы перебить размер, а эти два свойства мы
+	 * не задавали — и они доставались значку по наследству.
+	 */
+	margin: 0;
+	border-radius: 0;
+	/* Значок вытаскивается крупнее плитки и ужимается разметкой — просим
+	   сглаживать это по-хорошему, а не ближайшей точкой */
+	image-rendering: auto;
+}
+
+.qrx_appico_mono {
+	font-family: Rubik-Medium;
+	/*
+	 * Кегль от размера плитки, но не мельче девяти пикселей: при жёстком
+	 * значении буквы терялись в крупной плитке, а от чистой доли — в мелкой.
+	 * На плитке в 18 пикселей доля давала шесть, и буквы попросту не читались —
+	 * значок выглядел отсутствующим.
+	 */
+	font-size: max(9px, calc(var(--icon-size, 56px) * 0.34));
+	letter-spacing: 0.02em;
+	color: var(--color-gold);
+}
+
+
+/* ── Витрина: карточки пакетов ───────────────────────────────────────── */
+
+.qrx_pkg_group {
+	width: 96%;
+	padding-top: 6px;
+	font: 12.8px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-gold);
+}
+
+.qrx_pkg_list {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	width: 96%;
+}
+
+.qrx_pkg {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 12px 14px;
+	border-radius: 12px;
+	transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_pkg:hover,
+.qrx_pkg_open {
+	background-color: rgb(var(--gold-rgb) / 0.06);
+}
+
+.qrx_pkg_top {
+	display: flex;
+	gap: 14px;
+	align-items: center;
+}
+
+.qrx_pkg_details {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	padding-top: 10px;
+	border-top: 1px solid var(--color-line);
+}
+
+/*
+ * Источник загрузки выделен, а не спрятан среди прочего: в winget есть пакеты
+ * от посторонних, и отличает их именно домен, откуда качается установщик.
+ */
+.qrx_pkg_source {
+	padding: 6px 14px;
+	font: 11.52px Rubik-Medium;
+	color: var(--color-gold);
+	background-color: rgb(var(--gold-rgb) / 0.12);
+	border-radius: 100px;
+	cursor: pointer;
+}
+
+.qrx_pkg_source:hover {
+	background-color: rgb(var(--gold-rgb) / 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_pkg {
+		transition: none;
+	}
+}
+
+/* Плюсик «в корзину»: он есть у каждой позиции, поэтому мелкий и без подписи */
+.qrx_plus {
+	flex: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 28px;
+	height: 28px;
+	font: 15px Rubik-Medium;
+	line-height: 1;
+	color: var(--color-gold);
+	border: 2px solid rgb(var(--gold-rgb) / 0.4);
+	border-radius: 100px;
+	cursor: pointer;
+	transition:
+		border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+		background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_plus:hover {
+	border-color: var(--color-gold);
+}
+
+.qrx_plus_on {
+	color: rgb(14, 15, 18);
+	background-color: rgb(var(--gold-rgb));
+	border-color: var(--color-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_plus {
+		transition: none;
+	}
+}
+
+/* ── Форма записи каталога ───────────────────────────────────────────── */
+
+.qrx_form {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	width: 96%;
+	padding: 22px 24px;
+	background: var(--color-card);
+	border: 2px solid var(--color-gold);
+	border-radius: 25px;
+	backdrop-filter: blur(12.5px);
+}
+
+/*
+ * Заголовок формы прилипает к верху.
+ *
+ * В нём живут «Назад», название и главные действия, а форма набора или записи
+ * бывает длиннее экрана. Без этого, чтобы выйти, приходилось прокручивать весь
+ * список обратно наверх — за одной кнопкой.
+ *
+ * Своя подложка обязательна: под прилипшей строкой едет содержимое, и без неё
+ * оно просвечивало бы сквозь текст.
+ */
+.qrx_form_head {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	display: flex;
+	gap: 16px;
+	align-items: center;
+	justify-content: space-between;
+	margin: -6px -4px 0;
+	padding: 10px 4px;
+	background: var(--color-card);
+	border-radius: 14px;
+}
+
+.qrx_field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.qrx_field_label {
+	font: 11.52px Rubik-Medium;
+	text-transform: uppercase;
+	color: var(--color-text);
+	opacity: 0.55;
+}
+
+.qrx_field_input {
+	box-sizing: border-box;
+	width: 100%;
+	padding: 9px 14px;
+	font: 13.44px Rubik-Medium;
+	background-color: rgb(var(--gold-rgb) / 0.05);
+	border: 1px solid rgb(var(--gold-rgb) / 0.25);
+	border-bottom: 1px solid rgb(var(--gold-rgb) / 0.25);
+	border-radius: 12px;
+	transition: border-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_field_input:focus {
+	border-color: var(--color-gold);
+}
+
+.qrx_form_actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	padding-top: 4px;
+}
+
+/* Подстановка с машины: список коротких попаданий прямо под полем поиска */
+.qrx_form_pick {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 12px;
+	background-color: rgb(var(--gold-rgb) / 0.05);
+	border-radius: 14px;
+}
+
+.qrx_form_found {
+	padding: 8px 12px;
+	font: 12.8px Rubik-Medium;
+	text-align: left;
+	color: var(--color-text);
+	border-radius: 10px;
+	cursor: pointer;
+	transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_form_found:hover {
+	background-color: var(--color-hover);
+}
+
+.qrx_plus:disabled {
+	cursor: default;
+	opacity: 0.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_field_input,
+	.qrx_form_found {
+		transition: none;
+	}
+}
+
+/* Куда ставить: переключатель стоит над списком, а не у каждой позиции —
+   решение общее для всей витрины */
+.qrx_place_switch {
+	display: flex;
+	gap: 14px;
+	align-items: center;
+	width: 96%;
+	padding: 12px 16px;
+	background-color: rgb(var(--gold-rgb) / 0.06);
+	border-radius: 14px;
+	cursor: pointer;
+}
+
+/* ── Изоляция программы ──────────────────────────────────────────────────
+   Блок живёт внутри формы записи, у которой уже есть золотая рамка. Второй
+   такой же дал бы рамку в рамке, поэтому здесь только заливка и полоска слева:
+   связь с формой видна, а отдельной коробки не появляется. */
+
+.qrx_iso {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	width: 100%;
+	padding: 16px 18px;
+	background-color: rgb(var(--gold-rgb) / 0.06);
+	border-left: 3px solid rgb(var(--gold-rgb) / 0.45);
+	border-radius: 6px 16px 16px 6px;
+}
+
+.qrx_iso_head {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 14px;
+	align-items: center;
+	justify-content: space-between;
+}
+
+/* Что выдано — словами. Сам список прав лежит ниже, под «Подробнее» */
+.qrx_iso_sum {
+	margin: 0;
+	font: 12.8px Rubik-Medium;
+	line-height: 1.5;
+	color: var(--color-text);
+	opacity: 0.75;
+}
+
+.qrx_iso_sum_key {
+	text-transform: uppercase;
+	font-size: 11.52px;
+	opacity: 0.7;
+}
+
+.qrx_iso_actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+}
+
+/* Второй уровень. Черта сверху отделяет его от роли, не заводя новой панели */
+.qrx_iso_deep {
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	padding-top: 16px;
+	border-top: 1px solid rgb(var(--gold-rgb) / 0.2);
+}
+
+.qrx_iso_group {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+/* Права в две колонки: по одной в строку список выходит вдвое длиннее и
+   перестаёт читаться целиком */
+.qrx_iso_grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 10px 18px;
+}
+
+.qrx_iso_cap {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	padding: 8px 10px;
+	border-radius: 12px;
+	cursor: pointer;
+	transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_iso_cap:hover {
+	background-color: var(--color-hover);
+}
+
+.qrx_iso_cap_name {
+	font: 12.8px Rubik-Medium;
+	color: var(--color-text);
+}
+
+.qrx_iso_row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+}
+
+/* min-width нужен явно: в flex-ряду поле не даёт себя сжать и выталкивает
+   кнопку за край */
+.qrx_iso_row .qrx_field_input {
+	flex: 1;
+	width: auto;
+	min-width: 0;
+}
+
+/* Ход переустановки компонента песочницы. Работа идёт минуты, и всё это время
+   наружу должно быть видно, что она идёт: тишина читается как «сломалось» */
+.qrx_ws_step {
+	display: flex;
+	gap: 10px;
+	align-items: baseline;
+	justify-content: space-between;
+}
+
+.qrx_ws_share {
+	font: 12.8px Rubik-Medium;
+	color: var(--color-gold);
+	/* Цифры не должны дёргать строку при смене: у обычных начертаний ширина
+	   у знаков разная, и «9» уже «0» */
+	font-variant-numeric: tabular-nums;
+}
+
+.qrx_ws_bar {
+	overflow: hidden;
+	height: 4px;
+	border-radius: 2px;
+	background-color: rgb(var(--gold-rgb) / 0.15);
+}
+
+.qrx_ws_fill {
+	width: 100%;
+	height: 100%;
+	border-radius: 2px;
+	background-color: rgb(var(--gold-rgb));
+	transition: width 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Доля известна не всегда — тогда полоса ходит туда-сюда: она говорит, что
+   работа идёт, а не сколько её осталось */
+.qrx_ws_bar_vague .qrx_ws_fill {
+	width: 35%;
+	animation: qrx_ws_sweep 1400ms cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes qrx_ws_sweep {
+	0% {
+		transform: translateX(-100%);
+	}
+
+	100% {
+		transform: translateX(286%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_ws_bar_vague .qrx_ws_fill {
+		width: 100%;
+		animation: none;
+		opacity: 0.5;
+	}
+}
+
+.qrx_iso_key {
+	flex: 0 1 200px;
+}
+
+.qrx_iso_path {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	font: 12.16px Rubik-Medium;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	color: var(--color-text);
+	opacity: 0.65;
+}
+
+.qrx_iso_shot {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	padding: 10px 14px;
+	background-color: rgb(var(--gold-rgb) / 0.05);
+	border-radius: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_iso_cap {
+		transition: none;
+	}
+}
+
+/* ── Наборы ярлыков ──────────────────────────────────────────────────────
+   Запись набора — строка: значок, правка названия, ключи, отметки и порядок.
+   Всё в потоке, ничего не выкладывается поверх: строка растёт вниз, а не
+   наезжает на соседнюю. */
+
+.qrx_grp_item {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	padding: 10px 14px;
+	background-color: rgb(var(--gold-rgb) / 0.05);
+	/* Прозрачная рамка держит место: у перетаскиваемой строки она становится
+	   видимой, и без неё строка дёргалась бы на два пикселя в этот момент */
+	border: 1px solid transparent;
+	border-radius: 14px;
+}
+
+/* Название правится прямо в строке: заводить ради него отдельную форму —
+   лишний переход на каждое переименование */
+.qrx_grp_name {
+	padding: 5px 10px;
+	font: 12.8px Rubik-Medium;
+}
+
+.qrx_grp_move {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+}
+
+/* ── Наборы в панели трея ────────────────────────────────────────────────
+   Панель 390×490: сначала список наборов, потом содержимое выбранного.
+   Разворачивать всё сразу здесь некуда. */
+
+.qrx_tray_groups {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+	height: 100%;
+	padding: 4px 2px;
+	overflow-y: auto;
+}
+
+.qrx_tray_head {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.qrx_tray_name {
+	font: 13.44px Rubik-Medium;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	color: var(--color-text);
+}
+
+.qrx_tray_list {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.qrx_tray_row {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	padding: 8px 10px;
+	text-align: left;
+	border-radius: 14px;
+	cursor: pointer;
+	transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_tray_row:hover {
+	background-color: var(--color-hover);
+}
+
+.qrx_tray_row_text {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+/* Содержимое набора — сеткой: так за раз видно вдвое больше, а панель узкая */
+.qrx_tray_grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+	gap: 8px;
+}
+
+.qrx_tray_tile {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	align-items: center;
+	padding: 10px 6px;
+	border-radius: 14px;
+	cursor: pointer;
+	transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_tray_tile:hover {
+	background-color: var(--color-hover);
+}
+
+.qrx_tray_tile_name {
+	max-width: 100%;
+	overflow: hidden;
+	font: 11.52px Rubik-Medium;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_tray_row,
+	.qrx_tray_tile {
+		transition: none;
+	}
+}
+
+/* Плитка набора, которую можно утащить наружу. Курсор обещает перенос, а
+   лёгкий подъём под указателем подтверждает, что схватилось именно она */
+.qrx_grp_grab {
+	display: flex;
+	cursor: grab;
+	transition: transform 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_grp_grab:hover {
+	transform: translateY(-2px);
+}
+
+.qrx_grp_grab:active {
+	cursor: grabbing;
+}
+
+/* Подсказка при перетаскивании файлов над окном. В потоке, а не поверх:
+   всплывающая подложка перекрыла бы то, куда целятся */
+.qrx_grp_drop {
+	margin: 0;
+	padding: 10px 16px;
+	font: 12.8px Rubik-Medium;
+	color: var(--color-gold);
+	background-color: rgb(var(--gold-rgb) / 0.1);
+	border: 2px dashed rgb(var(--gold-rgb) / 0.5);
+	border-radius: 14px;
+}
+
+/* Вложенный набор в панели: обводкой отличается от программы, иначе по нему
+   нажимали бы, ожидая запуска */
+.qrx_tray_tile_nested {
+	border: 1px dashed rgb(var(--gold-rgb) / 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_grp_grab {
+		transition: none;
+	}
+}
+
+/* ── Карточки наборов ────────────────────────────────────────────────────
+   Строкой набор не показать: у него есть лицо — значок и то, что внутри.
+   Именно по ним его и узнают в списке из десятка. */
+
+.qrx_grp_cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+	gap: 14px;
+	width: 96%;
+}
+
+.qrx_grp_card {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding: 16px 18px;
+	background: var(--color-card);
+	border: 2px solid rgb(var(--gold-rgb) / 0.28);
+	border-radius: 22px;
+	transition:
+		border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+		transform 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_grp_card:hover {
+	border-color: rgb(var(--gold-rgb) / 0.55);
+}
+
+/* Появление копии набора. То же движение, что у новой записи внутри набора,
+   но крупнее: карточка и сама больше строки */
+.qrx_grp_card_new {
+	animation: qrx_grp_card_pop 620ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes qrx_grp_card_pop {
+	0% {
+		opacity: 0;
+		transform: translateY(-14px) scale(0.94);
+		border-color: var(--color-gold);
+	}
+	60% {
+		border-color: rgb(var(--gold-rgb) / 0.7);
+	}
+	100% {
+		opacity: 1;
+		transform: none;
+		border-color: rgb(var(--gold-rgb) / 0.28);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_grp_card_new {
+		animation: none;
+	}
+}
+
+/* Карточка под курсором во время переноса: видно, куда именно ляжет */
+.qrx_grp_card_target {
+	border-color: var(--color-gold);
+	border-style: dashed;
+	transform: translateY(-2px);
+}
+
+.qrx_grp_card_head {
+	display: flex;
+	gap: 14px;
+	align-items: center;
+}
+
+.qrx_grp_marks {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	align-items: flex-end;
+}
+
+.qrx_grp_card_foot {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	padding-top: 4px;
+	border-top: 1px solid rgb(var(--gold-rgb) / 0.15);
+}
+
+/* Полоска содержимого: состав виден, не открывая набор */
+.qrx_grp_strip {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: center;
+}
+
+/*
+ * Значок в полоске содержимого — без плашки вокруг.
+ *
+ * Раньше он сидел в отдельной подложке со скруглением: она обводила логотип
+ * второй формой поверх его собственной. Осталась только рамка отступа, чтобы
+ * значки не слипались.
+ */
+.qrx_grp_chip {
+	display: flex;
+	padding: 2px;
+}
+
+.qrx_grp_more {
+	padding: 4px 9px;
+	font: 11.52px Rubik-Medium;
+	color: var(--color-text);
+	opacity: 0.6;
+	background-color: rgb(var(--gold-rgb) / 0.1);
+	border-radius: 100px;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Значок, который берут мышью: пока его тащат, он приглушён — видно, что
+   жест принят, а не проглочен */
+.qrx_grp_grab_busy {
+	opacity: 0.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_grp_card {
+		transition: none;
+	}
+}
+
+/* Ручка перестановки. Три точки в два ряда — привычный знак «меня можно
+   тащить»; курсор подтверждает это до нажатия */
+.qrx_grp_handle {
+	flex: none;
+	/*
+	 * Размер кратен шагу точек намеренно: 3 столбца по 5 и 4 ряда по 5. Тогда
+	 * повторяющаяся заливка укладывается ровно и ни одна точка не обрезается
+	 * краем — прежняя ручка резала крайние пополам.
+	 */
+	width: 15px;
+	height: 20px;
+	cursor: grab;
+	opacity: 0.5;
+	touch-action: none;
+	background-image: radial-gradient(
+		circle at center,
+		var(--color-gold) 1.15px,
+		transparent 1.35px
+	);
+	background-size: 5px 5px;
+	transition: opacity 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_grp_handle:hover {
+	opacity: 1;
+}
+
+.qrx_grp_handle:active {
+	cursor: grabbing;
+}
+
+/*
+ * Строка, которую сейчас тащат.
+ *
+ * Полупрозрачная и слегка приподнятая — как значок, снятый с рабочего стола.
+ * Показывать, куда она встанет, отдельной чертой больше не нужно: соседи
+ * расступаются прямо под курсором, и место видно самим списком.
+ */
+.qrx_grp_item_held {
+	opacity: 0.55;
+	transform: scale(1.01);
+	border: 1px dashed rgb(var(--gold-rgb) / 0.6);
+	box-shadow: 0 10px 26px rgb(0 0 0 / 0.35);
+}
+
+/* Появление добавленной записи */
+.qrx_grp_item_new {
+	animation: qrx_grp_pop 620ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes qrx_grp_pop {
+	0% {
+		opacity: 0;
+		transform: translateY(-10px) scale(0.97);
+		background-color: rgb(var(--gold-rgb) / 0.22);
+	}
+	60% {
+		background-color: rgb(var(--gold-rgb) / 0.16);
+	}
+	100% {
+		opacity: 1;
+		transform: none;
+		background-color: rgb(var(--gold-rgb) / 0.05);
+	}
+}
+
+/* Шаг вверх-вниз. Раньше это были знаки ↑ и ↓ шрифтом: они съезжали по
+   базовой линии и в ряду кнопок выглядели опечаткой. Теперь — уголок,
+   нарисованный рамкой, всегда одного размера и точно по центру */
+.qrx_grp_step {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: 1px solid rgb(var(--gold-rgb) / 0.3);
+	border-radius: 9px;
+	cursor: pointer;
+	transition:
+		border-color 160ms cubic-bezier(0.4, 0, 0.2, 1),
+		background-color 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_grp_step:hover:not(:disabled) {
+	border-color: var(--color-gold);
+	background-color: rgb(var(--gold-rgb) / 0.12);
+}
+
+.qrx_grp_step:disabled {
+	cursor: default;
+	opacity: 0.25;
+}
+
+.qrx_grp_step_ico {
+	width: 7px;
+	height: 7px;
+	border-top: 2px solid var(--color-gold);
+	border-right: 2px solid var(--color-gold);
+	border-radius: 1px;
+}
+
+/* Уголок поворачивается, а не рисуется дважды: так они заведомо одинаковы */
+.qrx_grp_step_up {
+	transform: translateY(1px) rotate(-45deg);
+}
+
+.qrx_grp_step_down {
+	transform: translateY(-1px) rotate(135deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_grp_handle,
+	.qrx_grp_step {
+		transition: none;
+	}
+
+	.qrx_grp_item_new {
+		animation: none;
+	}
+}
+
+
+/* Уменьшенный вид кнопки удержания — для ряда с обычными кнопками. Полный
+   рассчитан на отдельно стоящее действие и рядом с мелкими соседями выглядел
+   чужим: вдвое выше остальных */
+.qrx_hold_small {
+	flex-direction: row;
+	gap: 8px;
+	align-items: center;
+	width: auto;
+	min-height: 0;
+	padding: 7px 14px;
+	border-radius: 100px;
+}
+
+.qrx_hold_small .qrx_hold_ico {
+	width: 14px;
+	height: 14px;
+}
+
+.qrx_hold_small .qrx_hold_label {
+	font: 11.52px Rubik-Medium;
+	text-transform: uppercase;
+}
+
+/* Пояснение уезжает в подсказку при наведении: в узкой кнопке для него нет
+   места, а без него смысл удержания всё равно понятен по набирающейся полосе */
+.qrx_hold_small .qrx_hold_hint {
+	display: none;
+}
+
+/* Сетка уведомлений: подпись уровня и два переключателя. Колонки одинаковы у
+   всех строк — иначе флажки разъезжались бы вслед за длиной пояснения */
+.qrx_note_grid {
+	display: grid;
+	grid-template-columns: 1fr 88px 88px;
+	gap: 10px 12px;
+	align-items: center;
+}
+
+.qrx_note_cell {
+	display: flex;
+	justify-content: center;
+	cursor: pointer;
+}
+
+/* Пояснение выбранного режима уведомлений. Отдельной строкой во всю ширину:
+   стоя рядом с переключателем, длинное пояснение выталкивало его на другую
+   строку, и ряд прыгал при каждом переключении. Высота задана снизу, чтобы
+   смена пояснения на строку короче не дёргала всё, что ниже */
+.qrx_note_hint {
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 32px;
+	margin: 0;
+	padding: 7px 12px;
+	font: 12.16px Rubik-Medium;
+	line-height: 1.4;
+	color: var(--color-text);
+	opacity: 0.7;
+	background-color: rgb(var(--gold-rgb) / 0.06);
+	border-radius: 12px;
+}
+
+/* ── Окно набора ─────────────────────────────────────────────────────────
+   Своё окно, а не панель трея: набор открывают ради одного действия —
+   увидеть свои программы и запустить нужную. */
+
+.qrx_pop {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	/*
+	 * Панель закрывает окно ровно, край в край.
+	 *
+	 * Меньше — и по краям остаётся полоска прозрачного окна, из-за которой углы
+	 * выглядят рваными. Мерить при этом надо не её, а содержимое внутри: сама
+	 * она растянута по окну и своей высоты не имеет.
+	 */
+	width: 100%;
+	height: 100%;
+	padding: 6px;
+	/*
+	 * Непрозрачная заливка и никакого размытия подложки.
+	 *
+	 * Здесь это корень прозрачного окна, а не карточка внутри другого экрана.
+	 * `backdrop-filter` размывает то, что позади окна, — а позади прозрачного
+	 * окна нет ничего, и композитор оставлял на этом месте прямоугольник,
+	 * который вылезал из-под скруглённых углов. Полупрозрачная заливка добавляла
+	 * к этому просвет по краям.
+	 *
+	 * Внутри непрозрачного окна оба приёма уместны и остаются, но корню окна без
+	 * рамки нужна честная сплошная подложка.
+	 */
+	background: var(--color-surface);
+	border: 2px solid var(--color-gold);
+	/* Скругление поменьше: системное скругление окна с этого окна снято, и
+	   теперь видна только наша дуга — крупная выглядела бы тяжело */
+	border-radius: 14px;
+}
+
+.qrx_pop_head {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.qrx_pop_name {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	font: 11.52px Rubik-Medium;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	color: var(--color-text);
+}
+
+/* Крестик рисуется двумя чертами, а не знаком шрифта: тот съезжает по базовой
+   линии и в маленькой кнопке заметно косит */
+.qrx_pop_close {
+	position: relative;
+	flex: none;
+	width: 18px;
+	height: 18px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background-color 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_pop_close:hover {
+	background-color: var(--color-hover);
+}
+
+.qrx_pop_close::before,
+.qrx_pop_close::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 9px;
+	height: 2px;
+	margin: -1px 0 0 -4.5px;
+	border-radius: 2px;
+	background-color: rgb(var(--gold-rgb));
+}
+
+.qrx_pop_close::before {
+	transform: rotate(45deg);
+}
+
+.qrx_pop_close::after {
+	transform: rotate(-45deg);
+}
+
+/* Внутренняя обёртка: её и меряют, чтобы подогнать высоту окна */
+.qrx_pop_body {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+/*
+ * В окне набора значок идёт без плитки.
+ *
+ * Подложка под ним нужна там, где значки стоят в списке вперемешку с
+ * монограммами: она равняет их между собой. Здесь же всё крупное и в один ряд,
+ * и рамка вокруг каждого только дробит строку. Значок при этом растёт на всю
+ * плитку — отступ держал его вес наравне с буквой, а без подложки равнять не с
+ * чем.
+ */
+.qrx_pop .qrx_appico {
+	background-color: transparent;
+	border-color: transparent;
+	overflow: visible;
+}
+
+/*
+ * Кроме тех, у кого значка не нашлось.
+ *
+ * Настоящий значок держит форму сам, а две буквы без подложки висят в воздухе
+ * и читаются как пустое место — «значка просто нет». Плитка возвращает им вес.
+ */
+.qrx_pop .qrx_appico_empty {
+	background-color: rgb(var(--gold-rgb) / 0.12);
+	border-color: rgb(var(--gold-rgb) / 0.2);
+	/* Буквам подложка нужна, но пусть будет мягкой, а не глухим квадратом */
+	border-radius: 6px;
+}
+
+.qrx_pop .qrx_appico_img {
+	width: 100%;
+	height: 100%;
+}
+
+/*
+ * Программы в одну строку, без переноса вниз.
+ *
+ * Ровно те же 48 и 4, из которых считается ширина окна. Когда программ больше,
+ * чем помещается, строка прокручивается вбок — заворачивать её вниз здесь
+ * незачем: окно и так подгоняется под содержимое.
+ */
+.qrx_pop_grid {
+	display: flex;
+	gap: 4px;
+	overflow-x: auto;
+	overflow-y: hidden;
+	/*
+	 * Полосы прокрутки здесь не видно.
+	 *
+	 * В окне с ладонь она занимала заметную долю высоты и золотой чертой резала
+	 * низ панели — той самой рваной полоской. Прокрутка колесом и перетаскиванием
+	 * при этом работает; она нужна только за девятой программой.
+	 */
+	scrollbar-width: none;
+	/* Прокрутка мгновенная, а не сглаженная: общее `scroll-behavior: smooth` из
+	   `*` превращает запись `scrollLeft` в анимацию, и самоход у края идёт
+	   рывками — обратное чтение в том же кадре нового значения не даёт */
+	scroll-behavior: auto;
+}
+
+.qrx_pop_grid::-webkit-scrollbar {
+	display: none;
+}
+
+.qrx_pop_tile {
+	/* Ширина плитки задана: в строке без переноса они иначе сжимаются под
+	   длину подписи, и ряд идёт вразнобой */
+	flex: none;
+	/*
+	 * Ширина задана, высота — не меньше её же.
+	 *
+	 * Без нижней границы плитка росла только вширь: высоту ей задавало
+	 * содержимое, а значок внутри стал меньше — и кнопка вытянулась в
+	 * прямоугольник. Теперь она не уже и не ниже сорока восьми, а подпись, если
+	 * она включена, добавляет высоты сверх этого.
+	 */
+	/* Рамка и поля входят в заданный размер: общего `box-sizing` в проекте нет
+	   (только у `#app` и у `.qrx_pop`), и без этого плитка при ширине сорок
+	   восемь и полях по три занимает пятьдесят четыре — на шесть больше того,
+	   из чего считается ширина окна, отчего ряд всегда был чуть шире окна и
+	   подпись у последней плитки срезалась */
+	box-sizing: border-box;
+	width: 48px;
+	min-height: 48px;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	align-items: center;
+	justify-content: center;
+	padding: 3px;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_pop_tile:hover {
+	background-color: var(--color-hover);
+}
+
+/* Отклик на нажатие: подтверждение приходит на нулевой точке пути, ещё до
+   порога переноса. Без сглаживания — сглаженное и читается как вялое. Заливкой,
+   а не масштабом: `transform` у плитки занят переездом, у обёртки — ходом за
+   указателем */
+.qrx_pop_tile:active {
+	background-color: rgb(var(--gold-rgb) / 0.16);
+	transition: none;
+}
+
+/* Вложенный набор отличается обводкой: по нему заходят, а не запускают */
+.qrx_pop_tile_nested {
+	border: 1px dashed rgb(var(--gold-rgb) / 0.45);
+}
+
+.qrx_pop_tile_name {
+	max-width: 100%;
+	overflow: hidden;
+	font: 9px Rubik-Medium;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_pop_close,
+	.qrx_pop_tile {
+		transition: none;
+	}
+}
+
+/* Обёртка перехода между списком наборов и правкой. Своей раскладки не несёт —
+   только собирает содержимое, чтобы въезжало оно целиком, а не по частям */
+/*
+ * Смена списка наборов и правки набора.
+ *
+ * Обе стороны кладутся в одну клетку сетки. Иначе на время перехода они
+ * встают друг под друга и высота блока скачком удваивается — а с этого места
+ * начинается прокрутка страницы, и она дёргалась бы вместе с ней. Абсолютное
+ * положение сюда не годится: уходящее вылезло бы поверх соседних блоков.
+ */
+.qrx_grp_swap {
+	display: grid;
+	width: 100%;
+}
+
+/* Едет она, а не сами стороны: переход должен висеть на том, чей блок смену
+   ключа переживает, — иначе он не играет вовсе */
+.qrx_grp_slide {
+	grid-area: 1 / 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.qrx_grp_stage {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	width: 100%;
+}
+
+/* Права изоляции внутри записи набора: занимают всю ширину строки, а не
+   встают шестым элементом в её ряд */
+.qrx_grp_rights {
+	flex-basis: 100%;
+	width: 100%;
+}
+
+/* ── Корзина ─────────────────────────────────────────────────────────── */
+/*
+ * Блок живёт внутри `qrx_set_row_stack` и оформлен его же средствами: строка
+ * с названием и пояснением слева, управление справа. Своего рисунка здесь нет
+ * намеренно — прошлая попытка рисовала свой, и посреди настроек он выглядел
+ * чужой деталью.
+ */
+.qrx_bin {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	width: 100%;
+}
+
+/*
+ * Строка настройки. Перенос обязателен, и это не запас на будущее: длинный
+ * список «Очистить корзину» ужиматься не умеет, а подпись рядом с ним
+ * сжималась до нуля и уезжала под него — заголовок «Нажатие» пропадал
+ * целиком. Тот же приём и по той же причине стоит у `qrx_set_row_head`.
+ */
+.qrx_bin_line {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px 18px;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+/* Текст забирает остаток строки и ужимается первым; управление — не ужимается
+   вовсе, иначе обрезалось бы посреди слова */
+.qrx_bin_line > .qrx_set_row_text {
+	flex: 1 1 200px;
+	min-width: 0;
+}
+
+.qrx_bin_line > :not(.qrx_set_row_text) {
+	flex: none;
+}
+
+.qrx_bin_limit {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.qrx_bin_limit_field {
+	width: 96px;
+	text-align: end;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Ступени сами разбираются по ширине: задавать число колонок вручную значило
+   бы держать по набору правил на каждую ширину окна */
+.qrx_bin_slots {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+	gap: 8px;
+	width: 100%;
+}
+
+.qrx_bin_slot {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 8px 10px;
+	text-align: start;
+	background-color: var(--color-surface);
+	border: 1px solid rgb(var(--gold-rgb) / 0.18);
+	border-radius: 10px;
+	cursor: pointer;
+	transition: border-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_bin_slot:hover {
+	border-color: rgb(var(--gold-rgb) / 0.55);
+}
+
+/* Подменённое выделяется рамкой: подписи мелкие, и с одного взгляда не
+   разобрать, что уже своё, а что от системы */
+.qrx_bin_slot_own {
+	border-color: var(--color-gold);
+}
+
+.qrx_bin_slot_name {
+	font: 12.8px Rubik-Medium;
+	color: var(--color-text);
+}
+
+.qrx_bin_slot_note {
+	font: 11px Rubik-Regular;
+	color: var(--color-placeholder);
+}
+
+.qrx_bin_reset {
+	align-self: flex-start;
+	font: 11.5px Rubik-Medium;
+	color: var(--color-gold);
+	text-transform: uppercase;
+	cursor: pointer;
+	background: none;
+	border: none;
+}
+
+/* ── Появление окна набора ───────────────────────────────────────────── */
+/*
+ * Своя анимация, а не повторение системной.
+ *
+ * У Windows всплывашка скрытых значков **выезжает** от панели задач. Здесь это
+ * выглядело бы странно: окно набора и так стоит вплотную к своему значку, и
+ * длинный полёт взялся бы из ниоткуда.
+ *
+ * Поэтому окно не летит, а **вырастает** — от того края, что смотрит на панель
+ * задач. Точку роста задаёт ядро: только оно знает, где панель стоит. Ход
+ * короткий, шесть пикселей: он объясняет, откуда взялось окно, и не заставляет
+ * ждать.
+ *
+ * Плитки разворачиваются друг за другом от той же стороны. Разом — это
+ * вспышка, её глаз не читает; по очереди — видно, что их несколько и сколько.
+ */
+.qrx_pop_open {
+	transform-origin: var(--origin, bottom center);
+	animation: qrx_pop_grow 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes qrx_pop_grow {
+	from {
+		opacity: 0;
+		transform: scale(0.92) translate(var(--rise-x, 0), var(--rise-y, 6px));
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.qrx_pop_open .qrx_pop_tile {
+	/* Задержка от места в ряду: 26 мс — заметно как очередь, но не как ожидание */
+	/*
+	 * backwards, а не both.
+	 *
+	 * both — это ещё и forwards, а тот оставляет на плитке последний кадр
+	 * навсегда: `transform: none`. Значения от анимаций в каскаде сильнее
+	 * атрибута `style` — то есть сильнее того самого `transform`, которым
+	 * переезд плитки на новое место и делается. С both соседи не сдвинулись бы
+	 * ни на пиксель. backwards держит первый кадр до начала — всё появление
+	 * остаётся на месте, — а после конца не применяет ничего.
+	 */
+	animation: qrx_pop_unfold 260ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+	animation-delay: calc(60ms + var(--at, 0) * 26ms);
+}
+
+@keyframes qrx_pop_unfold {
+	from {
+		opacity: 0;
+		transform: scale(0.72) translate(var(--rise-x, 0), var(--rise-y, 6px));
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/*
+ * Взятая плитка не участвует в появлении: она под рукой, и мигать ей незачем.
+ *
+ * Бледной она больше не становится: бледное читается как «недоступно», а здесь
+ * она, наоборот, единственная живая — это остальные расступаются под неё.
+ */
+.qrx_pop_tile_held {
+	animation: none !important;
+	z-index: 1;
+	cursor: grabbing;
+}
+
+/*
+ * Обёртка содержимого плитки.
+ *
+ * Подъём живёт здесь, а не на самой плитке: переезд соседей пишет плитке свой
+ * `transform` в атрибут `style`, и два `transform` на одном узле стирали бы
+ * друг друга.
+ */
+.qrx_pop_tile_lift {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	align-items: center;
+	/* Ширина задана, чтобы подпись обрезалась многоточием ровно по плитке */
+	width: 100%;
+	min-width: 0;
+	/* Посадка после отпускания: `--dx` и `--dy` пропадают вместе с классом, и
+	   плитка доезжает на место сама — отдельной анимации на это не нужно.
+	   Путь посадки теперь не больше полушага (около тридцати точек), а не шесть,
+	   как при прежнем зажиме: при прежних ста шестидесяти это выходило тридцать
+	   семь точек в секунду — вдевятеро медленнее проектного темпа */
+	transition: transform 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.qrx_pop_tile_held .qrx_pop_tile_lift {
+	/* Ход один к одному: зажим считает разметка по коробке сетки — она одна и
+	   режет, и одна знает, где кончается ряд и где начинается прокрутка. Прежде
+	   тут стоял зажим в шесть точек, и значок проходил шесть из пятидесяти двух,
+	   а остальное стоял — это и читалось как «нет отклика» */
+	transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(1.12);
+	/* Отдельным слоем: под тенью каждое движение иначе перерисовывается в
+	   главном потоке, а не отдаётся композитору */
+	will-change: transform;
+	/* За указателем следуют без сглаживания, иначе он отстаёт */
+	transition: none;
+	filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.35));
+}
+
+/*
+ * Пока плитка в руке, появление молчит.
+ *
+ * Её место в ряду меняется на ходу, а с ним и `--at` — то есть задержка уже
+ * отыгравшей анимации. Без этого сосед прыгал бы обратно в первый кадр всё
+ * время, пока идёт появление.
+ */
+/*
+ * Не `animation: none`: смена имени анимации на `none` и обратно — это по
+ * правилам отмена старой и запуск новой, и весь ряд заново влетал бы после
+ * каждого отпускания. Гасим ровно то, из-за чего сосед и прыгал в первый кадр:
+ * задержку от места и заливку до старта.
+ */
+.qrx_pop_grid_moving .qrx_pop_tile {
+	animation-delay: 0s;
+	animation-fill-mode: none;
+}
+
+/* Столбцом: та же строка, только сверху вниз */
+.qrx_pop_grid_column {
+	flex-direction: column;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qrx_pop_open,
+	.qrx_pop_open .qrx_pop_tile {
+		animation: none;
+	}
+
+	.qrx_pop_tile_lift,
+	.qrx_pop_tile_held .qrx_pop_tile_lift {
+		transition: none;
+	}
+
+	/* Подъём остаётся: это не движение, а признак «эта в руке». Ход за
+	   указателем остаётся тем более: положение задаёт рука, это прямая
+	   манипуляция, а не анимация, — без него плитка стала бы неуправляемой */
+	.qrx_pop_tile_held .qrx_pop_tile_lift {
+		transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(1.12);
+	}
+}
+
+/* Перенос ведётся событиями указателя: без этого движок забирает жест себе
+   как прокрутку, и плитка срывается с руки на первом же пикселе */
+.qrx_pop_tile {
+	touch-action: none;
+	-webkit-user-select: none;
+	user-select: none;
+	/* Долгое нажатие пальцем не должно звать системное меню: оно обрывает жест */
+	-webkit-touch-callout: none;
+}
+
+/* Значок записи набора: он же кнопка выбора своего значка */
+.qrx_grp_ico {
+	flex: none;
+	padding: 2px;
+	background: none;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: border-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_grp_ico:hover {
+	border-color: rgb(var(--gold-rgb) / 0.5);
+}
+
+/* Подменённый выделяется рамкой: иначе не видно, свой значок или из файла */
+.qrx_grp_ico_own {
+	border-color: rgb(var(--gold-rgb) / 0.6);
+}
+
+/* Пометка «пробное» у своей среды изоляции */
+.qrx_iso_beta {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 10px 12px;
+	background-color: rgb(var(--gold-rgb) / 0.08);
+	border: 1px solid rgb(var(--gold-rgb) / 0.3);
+	border-radius: 12px;
+}
+
+.qrx_iso_beta .qrx_found_tag {
+	align-self: flex-start;
+}
+
+/* Роли при песочнице Windows: внутри неё своя система, выдавать нечего */
+.qrx_iso_roles_off {
+	display: none;
+}
+
+/* Действия над найденной программой: запустить и открыть папку */
+.qrx_found_acts {
+	display: flex;
+	flex: none;
+	gap: 6px;
+	align-items: center;
+}
+
+.qrx_found_act {
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	background-color: var(--color-surface);
+	border: 1px solid rgb(var(--gold-rgb) / 0.2);
+	border-radius: 10px;
+	cursor: pointer;
+	transition:
+		background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+		border-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.qrx_found_act:hover {
+	background-color: rgb(var(--gold-rgb) / 0.16);
+	border-color: rgb(var(--gold-rgb) / 0.55);
+}
+
+.qrx_found_act > span {
+	width: 16px;
+	height: 16px;
+}
+
+/* Вторая строка настройки: она поясняет и уточняет первую */
+.qrx_bin_line_child {
+	padding-left: 18px;
+	border-left: 2px solid rgb(var(--gold-rgb) / 0.25);
+}

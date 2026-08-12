@@ -1,0 +1,50 @@
+version: 2
+
+updates:
+  # Интерфейс
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    groups:
+      # Одним запросом, а не пятью: у Tauri части версионируются вместе, и
+      # обновлять их по одной значит ловить несходящиеся типы
+      tauri:
+        patterns:
+          - '@tauri-apps/*'
+          - 'tauri-plugin-*'
+      svelte:
+        patterns:
+          - 'svelte'
+          - '@sveltejs/*'
+          - 'svelte-check'
+    commit-message:
+      prefix: deps
+
+  # Ядро
+  - package-ecosystem: cargo
+    directory: /src-tauri
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    groups:
+      tauri:
+        patterns:
+          - 'tauri'
+          - 'tauri-*'
+      windows:
+        patterns:
+          - 'windows'
+          - 'windows-sys'
+          - 'webview2-com'
+    commit-message:
+      prefix: deps
+
+  # Сама сборка
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci

@@ -1,10 +1,43 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Capability for the main window",
-  "windows": ["main"],
+  "description": "Права окон QuickRapidX. Список намеренно точечный — в исходном приложении здесь стоял fs-доступ к $DESKTOP/* и assetProtocol на */**.",
+  "windows": [
+    "main",
+    "tray",
+    "group"
+  ],
   "permissions": [
     "core:default",
-    "shell:allow-open"
+    "core:app:allow-version",
+    "core:window:allow-start-dragging",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-close",
+    "core:window:allow-minimize",
+    "core:window:allow-unminimize",
+    "core:window:allow-maximize",
+    "core:window:allow-unmaximize",
+    "core:window:allow-is-maximized",
+    "core:window:allow-is-minimized",
+    "core:window:allow-is-visible",
+    "core:window:allow-set-focus",
+    "core:window:allow-set-position",
+    "core:window:allow-outer-size",
+    "core:window:allow-current-monitor",
+    "opener:default",
+    {
+      "identifier": "opener:allow-open-path",
+      "//": "Область обязательна: без списка разрешённых путей плагин отвергает всё подряд, и кнопки «Открыть» молча не работали. Здесь открываются папки, которые человек выбрал сам, — Места хранения, найденные программы, каталог изоляции, — поэтому список широкий.",
+      "allow": [{ "path": "**" }]
+    },
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled",
+    "core:window:allow-set-size",
+    "core:window:allow-set-min-size",
+    "core:window:allow-center",
+    "dialog:allow-open",
+    "drag:default"
   ]
 }
