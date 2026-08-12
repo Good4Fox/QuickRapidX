@@ -65,11 +65,21 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: QuickRapidX ${{ github.ref_name }}
-          releaseBody: ${{ github.workspace }}/.github/RELEASE_NOTES.md
           # Черновиком: описание дописывается руками, и стоит убедиться, что
           # собралось именно то, что помечали
           releaseDraft: true
           prerelease: false
+
+      # Описание ставится отдельным шагом, а не через `releaseBody`.
+      #
+      # То поле принимает саму строку, а не имя файла: подставив туда путь, мы
+      # получили выпуск, в теле которого лежал путь к файлу вместо его
+      # содержимого. Здесь же файл читается по-настоящему.
+      - name: Release notes
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit ${{ github.ref_name }} --notes-file .github/RELEASE_NOTES.md --repo ${{ github.repository }}
 
       # Портативная сборка.
       #
@@ -83,14 +93,17 @@ jobs:
       - name: Pack the portable build
         shell: pwsh
         run: |
-          $out = "portable/QuickRapidX-${{ github.ref_name }}-portable"
+          # Метка приходит как `v0.5.0`, а установщики зовутся `0.5.0` —
+          # приводим к одному виду, иначе три файла в выпуске названы по-разному
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          $out = "portable/QuickRapidX-$version-portable"
           New-Item -ItemType Directory -Force $out | Out-Null
 
           Copy-Item src-tauri/target/release/quickrapidx.exe $out
           Copy-Item .github/portable/portable.txt $out
           Copy-Item .github/portable/ЧИТАЙ.txt $out
 
-          Compress-Archive -Path "$out/*" -DestinationPath "portable/QuickRapidX_${{ github.ref_name }}_x64_portable.zip" -CompressionLevel Optimal
+          Compress-Archive -Path "$out/*" -DestinationPath "portable/QuickRapidX_${version}_x64_portable.zip" -CompressionLevel Optimal
 
           Get-ChildItem portable/*.zip | ForEach-Object { "{0} — {1:N1} МБ" -f $_.Name, ($_.Length / 1MB) }
 
@@ -98,4 +111,4 @@ jobs:
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ github.ref_name }} portable/QuickRapidX_${{ github.ref_name }}_x64_portable.zip --clobber --repo ${{ github.repository }}
+        run: gh release upload ${{ github.ref_name }} portable/QuickRapidX_*_x64_portable.zip --clobber --repo ${{ github.repository }}
