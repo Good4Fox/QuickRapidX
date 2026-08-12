@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QuickRapidX — органайзер для Windows</title>
+<meta name="description" content="Наборы программ, осмотр машины, изоляция, корзина и уборка Windows. Открытый код под MIT, Tauri 2 и Rust. Для Windows 10 и 11.">
+<meta name="theme-color" content="#0b0a09">
+<link rel="icon" href="img/fox.webp" type="image/webp">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="QuickRapidX — органайзер для Windows">
+<meta property="og:description" content="Наборы программ, осмотр машины, изоляция, корзина и уборка Windows. Открытый код под MIT.">
+<meta property="og:image" content="img/banner.webp">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/*
+ * Оформление сайта QuickRapidX.
+ *
+ * Язык форм взят у досье Good Fox — тот же почти чёрный грунт, костяной текст,
+ * волосяные сетки и моноширинные метки: два сайта одного автора должны
+ * читаться роднёй. Отличие одно и намеренное: акцент здесь золотой, тот самый
+ * `#ddaa1d`, которым нарисована сама программа. Янтарь остался вторым голосом
+ * — он живёт в самом рисунке лиса.
+ */
+:root{
+  --ink:#0b0a09; --panel:#131110; --panel2:#191614; --line:#2b2622;
+  --bone:#ece5d8; --muted:#948a7c; --dim:#5f574d;
+  --gold:#ddaa1d; --gold-deep:#5c4715;
+  --amber:#ff7a1a; --cyan:#3fdcff; --ok:#7bd88f; --stop:#ff5470;
+}
+*{box-sizing:border-box}
+html{scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:smooth}
+html::-webkit-scrollbar{width:0;height:0;display:none}
+body{
+  margin:0;background:var(--ink);color:var(--bone);
+  font-family:"Golos Text",-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:15.5px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+/* Грунт: два мягких пятна и еле заметная развёртка. Ничего не двигается —
+   постоянная анимация на весь экран стоит батареи и внимания */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(1100px 620px at 8% -12%, rgba(221,170,29,.12), transparent 62%),
+    radial-gradient(820px 560px at 96% 4%, rgba(63,220,255,.06), transparent 62%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.016) 0 1px, transparent 1px 3px);
+}
+.shell{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 clamp(18px,4.5vw,56px)}
+
+#prog{position:fixed;top:0;left:0;height:2px;background:var(--gold);width:0;z-index:60;transition:width .1s}
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);
+  background:rgba(11,10,9,.82);border-bottom:1px solid transparent;transition:.25s;transform:translateY(-100%);
+}
+.topbar.on{transform:none;border-bottom-color:var(--line)}
+.topbar .in{max-width:1180px;margin:0 auto;padding:11px clamp(18px,4.5vw,56px);display:flex;align-items:center;gap:18px}
+.topbar .mk{font-family:"Unbounded",sans-serif;font-weight:900;font-size:15px;letter-spacing:-.02em}
+.topbar .mk i{color:var(--gold);font-style:normal}
+.topbar nav{display:flex;gap:16px;margin-left:auto;flex-wrap:wrap}
+.topbar nav a{color:var(--muted);text-decoration:none;font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.04em;padding:6px 0;border-bottom:1px solid transparent}
+.topbar nav a:hover{color:var(--bone)}
+.topbar nav a.on{color:var(--gold);border-bottom-color:var(--gold)}
+.topbar .dl{margin-left:18px;color:#140b03;background:var(--gold);text-decoration:none;font:700 11px/1 "JetBrains Mono",monospace;letter-spacing:.06em;padding:9px 13px;border-radius:3px;white-space:nowrap;transition:.15s}
+.topbar .dl:hover{filter:brightness(1.08)}
+@media(max-width:900px){.topbar nav{display:none}.topbar .dl{margin-left:auto}}
+
+/* ── шапка ─────────────────────────────────────── */
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:110px 0 44px;position:relative}
+.heroTop{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
+@media(max-width:880px){.heroTop{grid-template-columns:1fr}.heroFox{display:none}}
+.heroFox img{width:clamp(180px,22vw,300px);height:auto;display:block;filter:drop-shadow(0 18px 50px rgba(221,170,29,.22))}
+
+.kicker{display:flex;align-items:center;gap:12px;font:500 11px/1 "JetBrains Mono",monospace;letter-spacing:.2em;color:var(--dim);margin-bottom:26px;flex-wrap:wrap}
+.kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:pulse 2.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.kicker b{color:var(--ok);font-weight:500}
+
+h1.big{font-family:"Unbounded",sans-serif;font-weight:900;font-size:clamp(38px,8vw,96px);line-height:.9;letter-spacing:-.045em;margin:0}
+h1.big .l2{display:block;color:var(--gold)}
+.lede{font-size:clamp(15.5px,1.6vw,18.5px);color:#cdc3b3;max-width:62ch;margin:26px 0 0}
+.lede b{color:#fff;font-weight:600}
+
+.heroCta{display:flex;gap:12px;flex-wrap:wrap;margin:32px 0 0}
+.heroCta a{display:inline-flex;align-items:center;gap:9px;text-decoration:none;font:700 13px/1 "JetBrains Mono",monospace;letter-spacing:.05em;padding:16px 24px;border-radius:3px;transition:.2s cubic-bezier(.22,1,.36,1)}
+.heroCta .go{background:var(--gold);color:#140b03;box-shadow:0 10px 34px rgba(221,170,29,.28)}
+.heroCta .go:hover{filter:brightness(1.07);transform:translateY(-2px);box-shadow:0 16px 44px rgba(221,170,29,.4)}
+.heroCta .gh{background:transparent;color:var(--bone);border:1px solid var(--line)}
+.heroCta .gh:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+
+.factgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}
+.factgrid div{background:var(--panel);padding:15px 16px}
+.factgrid .k{display:block;font:500 9.5px/1 "JetBrains Mono",monospace;letter-spacing:.16em;color:var(--dim);margin-bottom:8px}
+.factgrid .v{font-family:"Unbounded",sans-serif;font-weight:700;font-size:16px;line-height:1.15;letter-spacing:-.02em}
+.factgrid .v.a{color:var(--gold)} .factgrid .v.c{color:var(--cyan)} .factgrid .v.g{color:var(--ok)}
+
+/* ── разделы ───────────────────────────────────── */
+section{padding:80px 0 12px;scroll-margin-top:64px;border-top:1px solid var(--line)}
+.sechead{display:flex;align-items:baseline;gap:15px;margin-bottom:10px;flex-wrap:wrap}
+.sechead .no{font:700 11px/1 "JetBrains Mono",monospace;color:var(--gold);border:1px solid var(--gold-deep);padding:6px 8px;letter-spacing:.1em}
+.sechead h2{font-family:"Unbounded",sans-serif;font-weight:700;font-size:clamp(23px,3.4vw,36px);letter-spacing:-.03em;margin:0;line-height:1.05}
+.sechint{color:var(--muted);font-size:14.5px;margin:0 0 30px;max-width:76ch}
+
+h3{font-family:"Unbounded",sans-serif;font-weight:700;font-size:17px;letter-spacing:-.015em;margin:38px 0 14px}
+p{margin:0 0 13px}
+a{color:var(--cyan);text-underline-offset:3px}
+ul{margin:0 0 15px;padding-left:20px} li{margin-bottom:6px}
+strong{color:#fff;font-weight:600}
+code{font:500 12.5px/1 "JetBrains Mono",monospace;background:var(--panel2);border:1px solid var(--line);padding:2px 6px;border-radius:2px;color:var(--cyan)}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(238px,1fr))}
+
+/* Карточка возможности: номер уголком, как в досье — он говорит «их
+   пересчитали», а не украшает */
+.feat{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:22px 24px;position:relative;overflow:hidden;transition:.2s}
+.feat:hover{border-color:var(--gold-deep)}
+.feat .idx{font-family:"Unbounded",sans-serif;font-weight:900;font-size:34px;letter-spacing:-.04em;color:#241f1a;line-height:1;position:absolute;top:14px;right:18px}
+.feat h4{margin:0 0 10px;font-family:"Unbounded",sans-serif;font-weight:700;font-size:16.5px;letter-spacing:-.015em;max-width:80%}
+.feat p{margin:0 0 10px;font-size:14px;color:#c2b8a8}
+.feat ul{margin:10px 0 0;padding-left:16px;font-size:13.5px;color:var(--muted)}
+.feat li{margin-bottom:4px}
+.feat.beta{border-color:var(--gold-deep);background:linear-gradient(180deg,#1a150c,#131110)}
+.feat.beta .idx{color:var(--gold-deep)}
+
+.tag{display:inline-block;font:500 10.5px/1 "JetBrains Mono",monospace;letter-spacing:.08em;padding:5px 8px;border:1px solid var(--line);color:var(--muted);border-radius:2px;margin:0 6px 6px 0;white-space:nowrap}
+.tag.a{color:var(--gold);border-color:var(--gold-deep)} .tag.c{color:var(--cyan);border-color:#194a58}
+.tag.g{color:var(--ok);border-color:#2c4d34} .tag.s{color:var(--stop);border-color:#5c2431}
+
+.note{border-left:3px solid var(--gold);background:#171310;padding:15px 18px;margin:22px 0;font-size:14.5px}
+.note .lab{display:block;font:700 10px/1 "JetBrains Mono",monospace;letter-spacing:.16em;color:var(--gold);margin-bottom:8px}
+.note.c{border-left-color:var(--cyan);background:#101618}
+.note.c .lab{color:var(--cyan)}
+
+.shot{width:100%;border:1px solid var(--line);border-radius:3px;display:block;margin:26px 0 0;background:var(--panel)}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:11px 13px;text-align:left;vertical-align:top}
+th{background:var(--panel2);font:600 10.5px/1.3 "JetBrains Mono",monospace;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+tbody tr:nth-child(even){background:#0f0d0c}
+
+.stackrow{background:var(--panel);border:1px solid var(--line);padding:18px 20px;border-radius:3px;margin-bottom:14px}
+.stackrow .hd{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:11px}
+.stackrow h5{margin:0;font-family:"Unbounded",sans-serif;font-weight:700;font-size:14.5px;letter-spacing:-.01em}
+.stackrow .lvl{font:600 10px/1 "JetBrains Mono",monospace;letter-spacing:.1em;padding:5px 8px;border-radius:2px}
+.lvl.core{background:#2a2107;color:var(--gold);border:1px solid var(--gold-deep)}
+.lvl.reg{background:#0f2027;color:var(--cyan);border:1px solid #194a58}
+.stackrow p{font-size:13.5px;color:var(--muted);margin:0}
+
+/* дорожная карта */
+.tl{border-left:1px solid var(--line);padding-left:24px;margin-left:6px}
+.tl .ev{position:relative;padding-bottom:22px}
+.tl .ev::before{content:"";position:absolute;left:-29px;top:8px;width:9px;height:9px;background:var(--ink);border:1px solid var(--dim);border-radius:50%}
+.tl .ev.now::before{border-color:var(--gold);box-shadow:0 0 10px rgba(221,170,29,.6)}
+.tl .ev h5{margin:0 0 4px;font-family:"Unbounded",sans-serif;font-weight:700;font-size:14.5px}
+.tl .ev p{margin:0;font-size:13.5px;color:var(--muted)}
+
+/* скачивание */
+.dlgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:24px}
+.dlcard{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:22px 24px;display:flex;flex-direction:column}
+.dlcard.main{border-color:var(--gold-deep);background:linear-gradient(180deg,#1a150c,#131110)}
+.dlcard h4{margin:0 0 6px;font-family:"Unbounded",sans-serif;font-weight:700;font-size:16px}
+.dlcard p{font-size:13.5px;color:var(--muted);margin:0 0 16px}
+.dlcard a{margin-top:auto;display:inline-flex;justify-content:center;text-decoration:none;font:700 12px/1 "JetBrains Mono",monospace;letter-spacing:.06em;padding:14px 18px;border-radius:3px;border:1px solid var(--line);color:var(--bone);transition:.18s}
+.dlcard a:hover{border-color:var(--gold);color:var(--gold)}
+.dlcard.main a{background:var(--gold);color:#140b03;border-color:var(--gold)}
+.dlcard.main a:hover{filter:brightness(1.08);color:#140b03}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:40px 0 60px;color:var(--muted);font-size:13.5px}
+footer .row{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
+footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent}
+footer a:hover{color:var(--gold);border-bottom-color:var(--gold-deep)}
+footer .sub{margin-top:18px;color:var(--dim);font:500 11px/1.6 "JetBrains Mono",monospace}
+
+/* Появление разделов при прокрутке — один раз, коротко и только по вертикали */
+.rise{opacity:0;transform:translateY(18px);transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1)}
+.rise.seen{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rise{opacity:1;transform:none;transition:none}
+  .kicker .dot{animation:none}
+  .heroCta a:hover,.dlcard a:hover{transform:none}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<header class="topbar" id="topbar">
+  <div class="in">
+    <span class="mk">QUICK<i>RAPID</i>X</span>
+    <nav>
+      <a href="#what">Что это</a>
+      <a href="#feat">Возможности</a>
+      <a href="#how">Устройство</a>
+      <a href="#next">Дальше</a>
+    </nav>
+    <a class="dl" href="https://github.com/Good4Fox/QuickRapidX/releases/latest">СКАЧАТЬ</a>
+  </div>
+</header>
+
+<main class="shell">
+
+  <div class="hero">
+    <div class="heroTop">
+      <div>
+        <div class="kicker">
+          <span class="dot"></span><b>В АКТИВНОЙ РАЗРАБОТКЕ</b>
+          <span>·</span><span>WINDOWS 10 / 11</span>
+          <span>·</span><span>ОТКРЫТЫЙ КОД, MIT</span>
+        </div>
+
+        <h1 class="big">QUICK<span class="l2">RAPIDX</span></h1>
+
+        <p class="lede">
+          Органайзер для тех, у кого на машине не десять программ, а полторы сотни.
+          <b>Наборы, осмотр машины, изоляция, корзина и уборка Windows</b> — в одном окне,
+          без похода в реестр и пять вложенных панелей.
+        </p>
+
+        <div class="heroCta">
+          <a class="go" href="https://github.com/Good4Fox/QuickRapidX/releases/latest">СКАЧАТЬ ДЛЯ WINDOWS</a>
+          <a class="gh" href="https://github.com/Good4Fox/QuickRapidX">ИСХОДНЫЙ КОД</a>
+        </div>
+      </div>
+
+      <div class="heroFox"><img src="img/fox.webp" alt="Знак QuickRapidX" width="520" height="520"></div>
+    </div>
+
+    <div class="factgrid">
+      <div><span class="k">ПЛАТФОРМА</span><span class="v">Windows 10 · 11</span></div>
+      <div><span class="k">ЛИЦЕНЗИЯ</span><span class="v g">MIT</span></div>
+      <div><span class="k">ЯЗЫКИ</span><span class="v c">RU · EN · JP</span></div>
+      <div><span class="k">ЯДРО</span><span class="v a">Rust · Tauri 2</span></div>
+      <div><span class="k">ПАМЯТЬ В ПОКОЕ</span><span class="v">86 МБ</span></div>
+    </div>
+  </div>
+
+  <section id="what" class="rise">
+    <div class="sechead"><span class="no">01</span><h2>Что это такое</h2></div>
+    <p class="sechint">
+      Настольная утилита для Windows. Не лаунчер, не чистильщик и не «ускоритель» —
+      а место, где программы держат в порядке и откуда ими управляют.
+    </p>
+
+    <div class="grid g2">
+      <div class="feat">
+        <h4>Проблема</h4>
+        <p>
+          Программ на машине набирается сотня с лишним. Половина не значится в панели
+          управления. После переустановки Windows всё это собирают обратно по памяти
+          и по списку в блокноте — вечер работы.
+        </p>
+      </div>
+      <div class="feat">
+        <h4>Что делает QuickRapidX</h4>
+        <p>
+          Находит установленное четырьмя способами сразу, собирает нужное в наборы,
+          запускает по одному нажатию, а то, что стоит держать подальше, — с урезанными
+          правами. И прибирает за системой: корзина, хранилище компонентов,
+          <code>Windows.old</code>.
+        </p>
+      </div>
+    </div>
+
+    <img class="shot" src="img/panel.webp" alt="Интерфейс QuickRapidX в тёмной и светлой темах" loading="lazy">
+  </section>
+
+  <section id="feat" class="rise">
+    <div class="sechead"><span class="no">02</span><h2>Что уже работает</h2></div>
+    <p class="sechint">
+      Честно: ниже только то, что есть в нынешней сборке и чем можно пользоваться
+      сегодня. Задуманное, но не сделанное — отдельным разделом ниже.
+    </p>
+
+    <div class="grid g2">
+      <div class="feat">
+        <span class="idx">01</span>
+        <h4>Наборы</h4>
+        <p>
+          Программы, папки и ссылки в одном списке. Открывается значком в трее или
+          ярлыком с рабочего стола, вырастает от того края экрана, где стоит панель задач,
+          и закрывается само.
+        </p>
+        <ul>
+          <li>вкладываются друг в друга, как папки</li>
+          <li>свой значок, подпись и подсказка у каждой записи</li>
+          <li>порядок — перетаскиванием, раскладка строкой или столбцом</li>
+          <li>запись вытаскивается прямо на панель задач</li>
+        </ul>
+      </div>
+
+      <div class="feat">
+        <span class="idx">02</span>
+        <h4>Найденное на машине</h4>
+        <p>Осмотр идёт по четырём источникам сразу, и каждый находит своё:</p>
+        <ul>
+          <li>реестр удаления — то, что поставил установщик</li>
+          <li>пакеты Microsoft Store</li>
+          <li>средства разработки из <code>PATH</code></li>
+          <li>обход дисков — портативное, о чём не знает никто</li>
+        </ul>
+        <p style="margin-top:10px">
+          Кнопка запуска выбирает настоящий исполняемый файл, а не деинсталлятор и не значок.
+        </p>
+      </div>
+
+      <div class="feat">
+        <span class="idx">03</span>
+        <h4>Хранилище</h4>
+        <p>
+          Объявите папку <strong>Местом</strong> — и складывайте туда установщики и
+          портативные сборки. Место переносится на другой диск целиком или уезжает на
+          съёмном носителе к другой машине.
+        </p>
+      </div>
+
+      <div class="feat beta">
+        <span class="idx">04</span>
+        <h4>Изоляция <span class="tag a">ПРОБНАЯ</span></h4>
+        <p>
+          Запуск программы с урезанными правами: свой профиль, своя папка данных, свои
+          разрешения. Три среды на выбор.
+        </p>
+        <ul>
+          <li>своя, на AppContainer — ставить ничего не нужно</li>
+          <li>песочница Windows — программа включит компонент сама</li>
+          <li>Sandboxie, если он уже есть</li>
+        </ul>
+        <p style="margin-top:10px">
+          Права выбираются ролью или по одному. Со средой можно снять снимок перед
+          сомнительной установкой и откатиться.
+        </p>
+      </div>
+
+      <div class="feat">
+        <span class="idx">05</span>
+        <h4>Корзина</h4>
+        <p>
+          Отдельный значок в трее с пятью ступенями наполнения и своими картинками под
+          каждую.
+        </p>
+        <ul>
+          <li>предел размера — по каждому диску отдельно</li>
+          <li>долей от объёма диска или своим числом</li>
+          <li>подтверждение, звук и окно хода — родные, от оболочки</li>
+        </ul>
+      </div>
+
+      <div class="feat">
+        <span class="idx">06</span>
+        <h4>Восстановление Windows</h4>
+        <ul>
+          <li>проверка и починка хранилища компонентов через DISM</li>
+          <li>переустановка песочницы, когда она не поднимается</li>
+          <li>удаление <code>Windows.old</code> — вместе с тем, что обычному удалению не поддаётся</li>
+        </ul>
+        <p style="margin-top:10px">
+          Ни одна задача не открывает чёрное окно консоли: ход виден в самой программе.
+        </p>
+      </div>
+
+      <div class="feat">
+        <span class="idx">07</span>
+        <h4>Каталог</h4>
+        <p>
+          Своя запись о программе: название, ссылка, идентификатор winget, значок и
+          описание — разложенные по ролям.
+        </p>
+      </div>
+
+      <div class="feat">
+        <span class="idx">08</span>
+        <h4>Мелочи, которые заметны</h4>
+        <ul>
+          <li>три языка, и при первом запуске берётся системный</li>
+          <li>две темы — каждая своя, а не вывернутая наизнанку</li>
+          <li>панель трея: корзина, наборы, машина, питание</li>
+          <li>крестик прячет в трей, удержание закрывает совсем</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="lab">ЧЕСТНО ОБ ИЗОЛЯЦИИ</span>
+      Она сужает то, до чего программа дотянется, но <strong>не является границей
+      безопасности</strong>: программу, которая сама пытается вырваться, она не удержит.
+      И приложения из Microsoft Store не запускаются ни одним способом — там не программы,
+      а точки перенаправления.
+    </div>
+  </section>
+
+  <section id="how" class="rise">
+    <div class="sechead"><span class="no">03</span><h2>Как устроено</h2></div>
+    <p class="sechint">
+      Не электронное приложение на пол-гигабайта. Интерфейс рисует встроенный в Windows
+      движок, а всё, что касается системы, делает ядро на Rust — напрямую, без прослоек.
+    </p>
+
+    <div class="stackrow">
+      <div class="hd"><h5>Ядро · Rust</h5><span class="lvl core">СИСТЕМА</span></div>
+      <p>
+        Реестр, AppContainer, права на файлы, извлечение значков, опрос корзины,
+        владение файлами при удалении <code>Windows.old</code>. Разговор с оболочкой
+        Windows идёт вызовами, а не запуском консольных утилит.
+      </p>
+    </div>
+
+    <div class="stackrow">
+      <div class="hd"><h5>Интерфейс · SvelteKit 2 и Svelte 5</h5><span class="lvl reg">ОКНА</span></div>
+      <p>
+        Три окна со своими маршрутами: главное, панель трея и окно набора. Все три без
+        системной рамки — фон, границу и скругление рисует само приложение.
+      </p>
+    </div>
+
+    <div class="stackrow">
+      <div class="hd"><h5>Оболочка · Tauri 2</h5><span class="lvl reg">СВЯЗЬ</span></div>
+      <p>
+        Мост между ядром и интерфейсом, сборка установщиков и права, выданные окнам
+        поимённо.
+      </p>
+    </div>
+
+    <h3>Пара решений, которыми стоит похвастаться</h3>
+
+    <table>
+      <thead><tr><th>Решение</th><th>Зачем</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Спящие окна</strong></td>
+          <td>
+            Скрытое окно усыпляется, а не висит в памяти. Рабочий набор приложения упал
+            с 694 МБ до 86 МБ.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Своё хранилище значков</strong></td>
+          <td>
+            Значки лежат одним файлом с дописыванием в конец и уходят в интерфейс своей
+            схемой uri — а не картинкой в разметке и не деревом из папок.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Ни одной консоли</strong></td>
+          <td>
+            Долгие задачи идут скрыто, а ход работы приходит событиями в само окно.
+            Чёрный терминал поверх программы — не способ разговаривать с человеком.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Весь текст в словаре</strong></td>
+          <td>
+            Больше семисот строк в трёх языках. Забытый ключ падает на проверке типов,
+            а не превращается в пустое место на экране.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note c">
+      <span class="lab">СОБРАТЬ САМОМУ</span>
+      <code>bun install</code> · <code>bun run tauri dev</code> · <code>bun run tauri build</code><br>
+      Нужны Bun, Rust и то, что требует Tauri. Подробности —
+      <a href="https://github.com/Good4Fox/QuickRapidX/blob/main/docs/ARCHITECTURE.md">в описании устройства</a>.
+    </div>
+  </section>
+
+  <section id="next" class="rise">
+    <div class="sechead"><span class="no">04</span><h2>Что дальше</h2></div>
+    <p class="sechint">
+      Разделы уже стоят в меню программы и помечены как незаконченные — чтобы было видно,
+      куда она движется.
+    </p>
+
+    <div class="tl">
+      <div class="ev now">
+        <h5>Сейчас</h5>
+        <p>Наборы, осмотр машины, хранилище, изоляция, корзина, восстановление, каталог.</p>
+      </div>
+      <div class="ev">
+        <h5>Автоматизация</h5>
+        <p>Сценарии для повторяющихся задач: свой конструктор или собственный код.</p>
+      </div>
+      <div class="ev">
+        <h5>Информация о системе и статистика дисков</h5>
+        <p>Подробности об оборудовании, состоянии дисков и разделов.</p>
+      </div>
+      <div class="ev">
+        <h5>Очистка и реестр</h5>
+        <p>Уборка накопившегося и понятный доступ к настройкам системы.</p>
+      </div>
+      <div class="ev">
+        <h5>Защита и подсветка</h5>
+        <p>Дополнительный уровень защиты и управление RGB-подсветкой устройств.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="get" class="rise">
+    <div class="sechead"><span class="no">05</span><h2>Скачать</h2></div>
+    <p class="sechint">Windows 10 или 11. Установщик ставится в профиль пользователя — прав администратора для установки не нужно.</p>
+
+    <div class="dlgrid">
+      <div class="dlcard main">
+        <h4>Последний выпуск</h4>
+        <p>Установщик <code>.exe</code> или <code>.msi</code>, что привычнее.</p>
+        <a href="https://github.com/Good4Fox/QuickRapidX/releases/latest">ПЕРЕЙТИ К ЗАГРУЗКЕ</a>
+      </div>
+      <div class="dlcard">
+        <h4>Все выпуски</h4>
+        <p>История версий и прежние сборки.</p>
+        <a href="https://github.com/Good4Fox/QuickRapidX/releases">СПИСОК ВЫПУСКОВ</a>
+      </div>
+      <div class="dlcard">
+        <h4>Исходный код</h4>
+        <p>MIT: от системных вызовов до последней кнопки.</p>
+        <a href="https://github.com/Good4Fox/QuickRapidX">ОТКРЫТЬ НА GITHUB</a>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="lab">ПРО ПРЕДУПРЕЖДЕНИЕ WINDOWS</span>
+      Пока у сборок нет цифровой подписи, SmartScreen покажет окно «Windows защитила ваш
+      компьютер». Это про отсутствие подписи, а не про содержимое файла: исходный код
+      открыт целиком, и собрать программу самому можно тремя командами выше.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="shell">
+    <div class="row">
+      <a href="https://github.com/Good4Fox/QuickRapidX">GitHub</a>
+      <a href="https://github.com/Good4Fox/QuickRapidX/releases">Выпуски</a>
+      <a href="https://github.com/Good4Fox/QuickRapidX/blob/main/.github/CHANGELOG.md">Журнал изменений</a>
+      <a href="https://github.com/Good4Fox/QuickRapidX/issues">Сообщить о беде</a>
+      <a href="https://boosty.to/good-fox">Boosty</a>
+      <a href="https://www.patreon.com/Good4Fox">Patreon</a>
+    </div>
+    <div class="sub">
+      QUICKRAPIDX · MIT · © 2024 — НАСТОЯЩЕЕ ВРЕМЯ · GOOD FOX
+    </div>
+  </div>
+</footer>
+
+<script>
+/*
+ * Три мелочи, и ни одной библиотеки: полоса прочтения, липкая шапка с
+ * подсветкой текущего раздела и появление разделов при прокрутке.
+ *
+ * Прокрутка слушается пассивно и считает раз в кадр — иначе на каждое движение
+ * колеса браузер пересчитывал бы раскладку.
+ */
+(function () {
+  var prog = document.getElementById('prog');
+  var bar = document.getElementById('topbar');
+  var links = Array.prototype.slice.call(document.querySelectorAll('.topbar nav a'));
+  var parts = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var frame = 0;
+
+  function draw() {
+    frame = 0;
+
+    var top = window.scrollY;
+    var full = document.documentElement.scrollHeight - window.innerHeight;
+
+    prog.style.width = (full > 0 ? (top / full) * 100 : 0) + '%';
+    bar.classList.toggle('on', top > 240);
+
+    var at = -1;
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i] && parts[i].getBoundingClientRect().top <= 120) at = i;
+    }
+    links.forEach(function (a, i) { a.classList.toggle('on', i === at); });
+  }
+
+  addEventListener('scroll', function () {
+    if (!frame) frame = requestAnimationFrame(draw);
+  }, { passive: true });
+
+  draw();
+
+  // Появление разделов — один раз на каждый, дальше наблюдатель отпускает
+  var eye = new IntersectionObserver(function (rows) {
+    rows.forEach(function (row) {
+      if (!row.isIntersecting) return;
+      row.target.classList.add('seen');
+      eye.unobserve(row.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px' });
+
+  document.querySelectorAll('.rise').forEach(function (el) { eye.observe(el); });
+})();
+</script>
+
+</body>
+</html>
