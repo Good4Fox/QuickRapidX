@@ -55,6 +55,7 @@ jobs:
           }
 
       - name: Build
+        id: build
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -64,9 +65,37 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: QuickRapidX ${{ github.ref_name }}
-          releaseBody: |
-            Установщики ниже. Что изменилось — в [журнале изменений](https://github.com/Good4Fox/QuickRapidX/blob/main/.github/CHANGELOG.md).
+          releaseBody: ${{ github.workspace }}/.github/RELEASE_NOTES.md
           # Черновиком: описание дописывается руками, и стоит убедиться, что
           # собралось именно то, что помечали
           releaseDraft: true
           prerelease: false
+
+      # Портативная сборка.
+      #
+      # Отдельного двоичного файла для неё нет — он тот же самый. Портативным
+      # запуск делает метка `portable.txt` рядом с программой: увидев её, ядро
+      # кладёт настройки, значки и снимки в папку возле себя, а не в профиль.
+      # Убрал метку — всё вернулось в профиль.
+      #
+      # Поэтому здесь не сборка, а упаковка: тот же exe плюс метка плюс
+      # объяснение, что это такое.
+      - name: Pack the portable build
+        shell: pwsh
+        run: |
+          $out = "portable/QuickRapidX-${{ github.ref_name }}-portable"
+          New-Item -ItemType Directory -Force $out | Out-Null
+
+          Copy-Item src-tauri/target/release/quickrapidx.exe $out
+          Copy-Item .github/portable/portable.txt $out
+          Copy-Item .github/portable/ЧИТАЙ.txt $out
+
+          Compress-Archive -Path "$out/*" -DestinationPath "portable/QuickRapidX_${{ github.ref_name }}_x64_portable.zip" -CompressionLevel Optimal
+
+          Get-ChildItem portable/*.zip | ForEach-Object { "{0} — {1:N1} МБ" -f $_.Name, ($_.Length / 1MB) }
+
+      - name: Attach the portable build
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ github.ref_name }} portable/QuickRapidX_${{ github.ref_name }}_x64_portable.zip --clobber --repo ${{ github.repository }}

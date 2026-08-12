@@ -1,0 +1,25 @@
+Этот файл делает QuickRapidX портативным.
+
+Пока он лежит рядом с quickrapidx.exe, программа держит всё своё в папке
+QuickRapidX-data возле себя: настройки, значки, снимки сред и журналы.
+В профиль пользователя она при этом не пишет ничего.
+
+Удалите этот файл — и программа вернётся к обычному поведению: данные лягут
+в %APPDATA%\com.good4fox.quickrapidx, как у установленной версии.
+
+Содержимое файла роли не играет. Важно только его имя и то, что он лежит
+рядом с программой.
+
+---
+
+This file makes QuickRapidX portable.
+
+While it sits next to quickrapidx.exe, the app keeps everything of its own in
+the QuickRapidX-data folder beside it: settings, icons, environment snapshots
+and logs. It writes nothing to the user profile.
+
+Delete this file and the app goes back to its normal behaviour: data lands in
+%APPDATA%\com.good4fox.quickrapidx, as it does for the installed version.
+
+The contents of this file do not matter. Only its name, and the fact that it
+sits next to the program.

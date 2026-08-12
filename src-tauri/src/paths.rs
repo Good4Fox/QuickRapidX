@@ -4,6 +4,11 @@
 //! (`%APPDATA%\QuickRapidX` на Windows). Относительных путей здесь нет
 //! намеренно: они создавали бы папки рядом с текущим рабочим каталогом,
 //! то есть в случайном месте — зависит от того, откуда запустили exe.
+//!
+//! Исключение одно — портативный запуск. Если рядом с программой лежит файл
+//! `portable.txt`, всё хозяйство переезжает в папку возле неё же. Путь при этом
+//! считается от самого exe, а не от рабочего каталога, — иначе вышло бы ровно
+//! то расползание по случайным местам, о котором сказано выше.
 
 use std::fs;
 use std::path::PathBuf;
@@ -206,23 +211,60 @@ impl Default for Config {
 /// Tauri и складывает свой `app_data_dir`.
 const IDENTIFIER: &str = "com.good4fox.quickrapidx";
 
+/// Метка портативного запуска — пустой файл рядом с программой.
+const PORTABLE_MARK: &str = "portable.txt";
+
+/// Куда портативная сборка кладёт своё.
+const PORTABLE_DIR: &str = "QuickRapidX-data";
+
+/// Каталог данных рядом с программой, если она запущена портативной.
+///
+/// Признаком служит файл `portable.txt` возле самого exe. Метка, а не отдельная
+/// сборка: двоичный файл один и тот же, и человек сам решает, где программе
+/// жить, — положил метку рядом, и всё её хозяйство переехало на флешку вместе с
+/// ней. Убрал — вернулось в профиль.
+///
+/// Проверяется путь до exe, а не текущий рабочий каталог: последний зависит от
+/// того, откуда программу запустили, и данные расползлись бы по случайным
+/// местам.
+fn portable_dir() -> Option<PathBuf> {
+    let exe = std::env::current_exe().ok()?;
+    let near = exe.parent()?;
+
+    if !near.join(PORTABLE_MARK).is_file() {
+        return None;
+    }
+
+    Some(near.join(PORTABLE_DIR))
+}
+
 /// Настройки без запущенного приложения.
 ///
 /// Нужны ровно одному месту — запуску по ярлыку: там окно не поднимается и
 /// Tauri не стартует вовсе, а прочитать настройки надо. Путь собирается тот же,
 /// что выдал бы `app_data_dir`.
 pub fn load_config_standalone() -> Option<Config> {
-    let path = PathBuf::from(std::env::var("APPDATA").ok()?)
-        .join(IDENTIFIER)
-        .join("config.json");
+    // Портативный запуск проверяется первым и здесь тоже: иначе ярлык изоляции
+    // читал бы настройки из профиля, пока сама программа живёт на флешке
+    let root = match portable_dir() {
+        Some(near) => near,
+        None => PathBuf::from(std::env::var("APPDATA").ok()?).join(IDENTIFIER),
+    };
 
-    let raw = fs::read_to_string(path).ok()?;
+    let raw = fs::read_to_string(root.join("config.json")).ok()?;
 
     serde_json::from_str::<Config>(&raw).ok()
 }
 
 /// Корневой каталог данных приложения.
+///
+/// У портативного запуска — рядом с программой, у обычного — тот, что выдаёт
+/// сама Tauri.
 pub fn data_dir(app: &AppHandle) -> Result<PathBuf, String> {
+    if let Some(near) = portable_dir() {
+        return Ok(near);
+    }
+
     app.path()
         .app_data_dir()
         .map_err(|e| format!("не удалось определить каталог данных: {e}"))
