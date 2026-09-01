@@ -60,8 +60,8 @@ tauri-plugin-drag = "2.1.1"
 # сойдутся: `PlatformWebview::controller()` отдаёт `ICoreWebView2Controller`
 # именно из этой сборки, и чужая была бы другим типом с тем же именем.
 [target.'cfg(windows)'.dependencies]
-webview2-com = "0.38.2"
-windows = { version = "0.61.3", features = ["Win32_Foundation"] }
+webview2-com = "0.39.1"
+windows = { version = "0.62.2", features = ["Win32_Foundation"] }
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-single-instance = "2"
